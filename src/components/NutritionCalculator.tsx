@@ -1,0 +1,387 @@
+
+import { useState, useMemo } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Droplet } from 'lucide-react';
+import { foodDatabase } from '@/data/foodDatabase';
+import { MealEntry, DailyGoals, NutritionTotals, FoodItem } from '@/types/nutrition';
+import { toast } from 'sonner';
+
+export default function NutritionCalculator() {
+  const [meals, setMeals] = useState<MealEntry[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
+  const [dailyGoals, setDailyGoals] = useState<DailyGoals>({
+    calories: 2000,
+    protein: 150,
+    carbs: 250,
+    fats: 65,
+  });
+
+  const filteredFoods = useMemo(() => {
+    return foodDatabase.filter(food =>
+      food.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  const totals = useMemo((): NutritionTotals => {
+    return meals.reduce(
+      (acc, meal) => ({
+        calories: acc.calories + meal.foodItem.calories * meal.servings,
+        protein: acc.protein + meal.foodItem.protein * meal.servings,
+        carbs: acc.carbs + meal.foodItem.carbs * meal.servings,
+        fats: acc.fats + meal.foodItem.fats * meal.servings,
+      }),
+      { calories: 0, protein: 0, carbs: 0, fats: 0 }
+    );
+  }, [meals]);
+
+  const addMeal = (foodItem: FoodItem, servings: number = 1) => {
+    const newMeal: MealEntry = {
+      id: Date.now().toString(),
+      foodItem,
+      servings,
+      mealType: selectedMealType,
+      timestamp: new Date(),
+    };
+    setMeals([...meals, newMeal]);
+    toast.success(`Added ${foodItem.name} to ${selectedMealType}`);
+  };
+
+  const removeMeal = (id: string) => {
+    setMeals(meals.filter(meal => meal.id !== id));
+    toast.info('Meal removed');
+  };
+
+  const updateServings = (id: string, servings: number) => {
+    setMeals(meals.map(meal => 
+      meal.id === id ? { ...meal, servings: Math.max(0.1, servings) } : meal
+    ));
+  };
+
+  const getMealsByType = (type: string) => {
+    return meals.filter(meal => meal.mealType === type);
+  };
+
+  const calculatePercentage = (current: number, goal: number) => {
+    return Math.min((current / goal) * 100, 100);
+  };
+
+  return (
+    <div className="container mx-auto p-4 max-w-7xl">
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          Nutrition Calculator
+        </h1>
+        <p className="text-muted-foreground">Track your daily nutrition and reach your goals</p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
+        {/* Calories Card */}
+        <Card className="border-primary/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Flame className="h-5 w-5 text-primary" />
+                Calories
+              </CardTitle>
+              <Badge variant="outline">{totals.calories.toFixed(0)} / {dailyGoals.calories}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Progress value={calculatePercentage(totals.calories, dailyGoals.calories)} className="h-2" />
+          </CardContent>
+        </Card>
+
+        {/* Protein Card */}
+        <Card className="border-accent/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Beef className="h-5 w-5 text-accent" />
+                Protein
+              </CardTitle>
+              <Badge variant="outline">{totals.protein.toFixed(1)}g / {dailyGoals.protein}g</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Progress value={calculatePercentage(totals.protein, dailyGoals.protein)} className="h-2" />
+          </CardContent>
+        </Card>
+
+        {/* Carbs Card */}
+        <Card className="border-warning/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Wheat className="h-5 w-5 text-warning" />
+                Carbs
+              </CardTitle>
+              <Badge variant="outline">{totals.carbs.toFixed(1)}g / {dailyGoals.carbs}g</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Progress value={calculatePercentage(totals.carbs, dailyGoals.carbs)} className="h-2" />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Food Database */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Apple className="h-5 w-5" />
+              Food Database
+            </CardTitle>
+            <CardDescription>Search and add foods to your meals</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search foods..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+
+              <Tabs value={selectedMealType} onValueChange={(v) => setSelectedMealType(v as any)}>
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
+                  <TabsTrigger value="lunch">Lunch</TabsTrigger>
+                  <TabsTrigger value="dinner">Dinner</TabsTrigger>
+                  <TabsTrigger value="snack">Snack</TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              <ScrollArea className="h-[400px] pr-4">
+                <div className="space-y-2">
+                  {filteredFoods.map((food) => (
+                    <Card key={food.id} className="p-3 hover:bg-accent/5 transition-colors">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm mb-1">{food.name}</h4>
+                          <p className="text-xs text-muted-foreground mb-2">{food.serving}</p>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <Badge variant="secondary" className="font-normal">
+                              {food.calories} cal
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              P: {food.protein}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              C: {food.carbs}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              F: {food.fats}g
+                            </Badge>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => addMeal(food)}
+                          className="shrink-0"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Daily Log */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Today's Meals</CardTitle>
+            <CardDescription>Your nutrition log for today</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
+                <TabsTrigger value="lunch">Lunch</TabsTrigger>
+                <TabsTrigger value="dinner">Dinner</TabsTrigger>
+                <TabsTrigger value="snack">Snack</TabsTrigger>
+              </TabsList>
+
+              <ScrollArea className="h-[400px] mt-4">
+                <TabsContent value="all" className="space-y-2 mt-0">
+                  {meals.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No meals added yet. Start by adding foods from the database.
+                    </div>
+                  ) : (
+                    meals.map((meal) => (
+                      <Card key={meal.id} className="p-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
+                              <Badge variant="secondary" className="text-xs">
+                                {meal.mealType}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Input
+                                type="number"
+                                value={meal.servings}
+                                onChange={(e) => updateServings(meal.id, parseFloat(e.target.value))}
+                                className="w-20 h-7 text-xs"
+                                step="0.5"
+                                min="0.1"
+                              />
+                              <span className="text-xs text-muted-foreground">× {meal.foodItem.serving}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2 text-xs">
+                              <Badge variant="secondary" className="font-normal">
+                                {(meal.foodItem.calories * meal.servings).toFixed(0)} cal
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                P: {(meal.foodItem.protein * meal.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                C: {(meal.foodItem.carbs * meal.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
+                              </Badge>
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeMeal(meal.id)}
+                            className="shrink-0 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </Card>
+                    ))
+                  )}
+                </TabsContent>
+
+                {['breakfast', 'lunch', 'dinner', 'snack'].map((type) => (
+                  <TabsContent key={type} value={type} className="space-y-2 mt-0">
+                    {getMealsByType(type).length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        No {type} meals added yet.
+                      </div>
+                    ) : (
+                      getMealsByType(type).map((meal) => (
+                        <Card key={meal.id} className="p-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm mb-1">{meal.foodItem.name}</h4>
+                              <div className="flex items-center gap-2 mb-2">
+                                <Input
+                                  type="number"
+                                  value={meal.servings}
+                                  onChange={(e) => updateServings(meal.id, parseFloat(e.target.value))}
+                                  className="w-20 h-7 text-xs"
+                                  step="0.5"
+                                  min="0.1"
+                                />
+                                <span className="text-xs text-muted-foreground">× {meal.foodItem.serving}</span>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-xs">
+                                <Badge variant="secondary" className="font-normal">
+                                  {(meal.foodItem.calories * meal.servings).toFixed(0)} cal
+                                </Badge>
+                                <Badge variant="outline" className="font-normal">
+                                  P: {(meal.foodItem.protein * meal.servings).toFixed(1)}g
+                                </Badge>
+                                <Badge variant="outline" className="font-normal">
+                                  C: {(meal.foodItem.carbs * meal.servings).toFixed(1)}g
+                                </Badge>
+                                <Badge variant="outline" className="font-normal">
+                                  F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
+                                </Badge>
+                              </div>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => removeMeal(meal.id)}
+                              className="shrink-0 text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </Card>
+                      ))
+                    )}
+                  </TabsContent>
+                ))}
+              </ScrollArea>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Daily Goals Settings */}
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Daily Goals</CardTitle>
+          <CardDescription>Set your daily nutrition targets</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-2">
+              <Label htmlFor="goal-calories">Calories</Label>
+              <Input
+                id="goal-calories"
+                type="number"
+                value={dailyGoals.calories}
+                onChange={(e) => setDailyGoals({ ...dailyGoals, calories: parseInt(e.target.value) })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="goal-protein">Protein (g)</Label>
+              <Input
+                id="goal-protein"
+                type="number"
+                value={dailyGoals.protein}
+                onChange={(e) => setDailyGoals({ ...dailyGoals, protein: parseInt(e.target.value) })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="goal-carbs">Carbs (g)</Label>
+              <Input
+                id="goal-carbs"
+                type="number"
+                value={dailyGoals.carbs}
+                onChange={(e) => setDailyGoals({ ...dailyGoals, carbs: parseInt(e.target.value) })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="goal-fats">Fats (g)</Label>
+              <Input
+                id="goal-fats"
+                type="number"
+                value={dailyGoals.fats}
+                onChange={(e) => setDailyGoals({ ...dailyGoals, fats: parseInt(e.target.value) })}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

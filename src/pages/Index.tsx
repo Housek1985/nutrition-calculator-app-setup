@@ -1,10 +1,10 @@
 
-import React from 'react';
+import NutritionCalculator from '@/components/NutritionCalculator';
 
-const Index = () => {
+export default function Index() {
   return (
-    <></>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <NutritionCalculator />
+    </div>
   );
-};
-
-export default Index;
+}
