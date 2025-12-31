@@ -48,7 +48,12 @@
     "addFoodToLogDescriptionDialog": "Specify servings and meal type for this food item.",
     "dailyLogEntries": "Daily Log Entries",
     "dailyLogEntriesDescription": "All food items logged for today.",
-    "noEntriesYet": "No food entries for today yet. Start logging your meals!"
+    "noEntriesYet": "No food entries for today yet. Start logging your meals!",
+    "recognizeFoodImage": "Recognize Food from Image",
+    "recognizeFoodImageDescription": "Upload an image to identify food items.",
+    "uploadImage": "Upload Image",
+    "recognizedFoods": "Recognized Foods",
+    "noFoodsRecognized": "No foods recognized. Try another image!"
   },
   "toast": {
     "mealNameRequired": "Meal name is required.",
@@ -60,7 +65,10 @@
     "foodAddedToLog": "Added {{foodName}} to daily log!",
     "foodRemovedFromLog": "Food item removed from daily log.",
     "foodNotFound": "Food '{{foodName}}' not found in database.",
-    "invalidServings": "Servings must be a positive number."
+    "invalidServings": "Servings must be a positive number.",
+    "noImageSelected": "Please select an image first.",
+    "foodRecognitionFailed": "Failed to recognize food. Please try again.",
+    "foodRecognitionSuccess": "{{count}} food items recognized!"
   },
   "settings": {
     "title": "Settings",

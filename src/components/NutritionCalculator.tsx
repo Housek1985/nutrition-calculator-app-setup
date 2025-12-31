@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles, Camera } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
 import { DailyGoals, FoodItem, SavedMeal, MealEntry } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -19,7 +19,8 @@ import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
 import DailyLogTab from './DailyLogTab';
-import AddFoodToLogDialog from './AddFoodToLogDialog'; // Import the new component
+import AddFoodToLogDialog from './AddFoodToLogDialog';
+import ImageFoodRecognizer from './ImageFoodRecognizer'; // Import the new component
 
 interface DisplayNutrition {
   calories: number;
@@ -239,6 +240,12 @@ export default function NutritionCalculator() {
             <Globe className="h-[1.2rem] w-[1.2rem]" />
             <span className="sr-only">Toggle language</span>
           </Button>
+
+          {/* Image Food Recognizer Button */}
+          <ImageFoodRecognizer
+            allAvailableFoods={allAvailableFoods}
+            onAddFoodToDailyLog={handleAddFoodToDailyLog}
+          />
         </div>
       </div>
 
