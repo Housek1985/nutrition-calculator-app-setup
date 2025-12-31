@@ -7,9 +7,9 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon, Salad, Candy, Droplet, Globe, UtensilsCrossed } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, UtensilsCrossed } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
-import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
+import { DailyGoals, FoodItem, SavedMeal } from '@/types/nutrition'; // Removed MealEntry, NutritionTotals
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -18,7 +18,6 @@ import CreateSavedMealDialog from './CreateSavedMealDialog';
 import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
-import NutritionCharts from './NutritionCharts';
 import CreateCustomFoodDialog from './CreateCustomFoodDialog';
 
 export default function NutritionCalculator() {
@@ -26,12 +25,12 @@ export default function NutritionCalculator() {
   const { language, changeLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
 
-  const [meals, setMeals] = useLocalStorage<MealEntry[]>('nutrition-meals', []);
+  // Removed meals state
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
   const [customFoods, setCustomFoods] = useLocalStorage<FoodItem[]>('nutrition-custom-foods', []);
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
+  // Removed selectedMealType state
   const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', {
     calories: 2000,
     protein: 150,
@@ -52,63 +51,13 @@ export default function NutritionCalculator() {
     );
   }, [searchQuery, allAvailableFoods]);
 
-  const totals = useMemo((): NutritionTotals => {
-    return meals.reduce(
-      (acc, meal) => ({
-        calories: acc.calories + meal.foodItem.calories * meal.servings,
-        protein: acc.protein + meal.foodItem.protein * meal.servings,
-        carbs: acc.carbs + meal.foodItem.carbs * meal.servings,
-        fats: acc.fats + meal.foodItem.fats * meal.servings,
-        fiber: acc.fiber + (meal.foodItem.fiber || 0) * meal.servings,
-        sugar: acc.sugar + (meal.foodItem.sugar || 0) * meal.servings,
-        sodium: acc.sodium + (meal.foodItem.sodium || 0) * meal.servings,
-      }),
-      { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
-    );
-  }, [meals]);
+  // Removed totals calculation
 
-  const addMeal = (foodItem: FoodItem, servings: number = 1) => {
-    const newMeal: MealEntry = {
-      id: Date.now().toString(),
-      foodItem,
-      servings,
-      mealType: selectedMealType,
-      timestamp: new Date(),
-    };
-    setMeals([...meals, newMeal]);
-    toast.success(t('toast.foodAdded', { foodName: foodItem.name, mealType: t(`nutritionCalculator.${selectedMealType}`) }));
-  };
-
-  const addSavedMealToLog = (savedMeal: SavedMeal) => {
-    const newMealEntries: MealEntry[] = savedMeal.items.map(item => ({
-      id: Date.now().toString() + '-' + item.foodItem.id,
-      foodItem: item.foodItem,
-      servings: item.servings,
-      mealType: selectedMealType,
-      timestamp: new Date(),
-    }));
-    setMeals(prevMeals => [...prevMeals, ...newMealEntries]);
-    toast.success(t('toast.savedMealAdded', { mealName: savedMeal.name, mealType: t(`nutritionCalculator.${selectedMealType}`) }));
-  };
-
-  const removeMeal = (id: string) => {
-    setMeals(meals.filter(meal => meal.id !== id));
-    toast.info(t('toast.mealRemoved'));
-  };
-
-  const updateServings = (id: string, servings: number) => {
-    setMeals(meals.map(meal => 
-      meal.id === id ? { ...meal, servings: Math.max(0.1, servings) } : meal
-    ));
-  };
-
-  const getMealsByType = (type: string) => {
-    return meals.filter(meal => meal.mealType === type);
-  };
-
-  const calculatePercentage = (current: number, goal: number) => {
-    return Math.min((current / goal) * 100, 100);
-  };
+  // Removed addMeal function
+  // Removed addSavedMealToLog function
+  // Removed removeMeal function
+  // Removed updateServings function
+  // Removed getMealsByType function
 
   const handleSaveNewMeal = (newMeal: SavedMeal) => {
     setSavedMeals(prev => [...prev, newMeal]);
@@ -165,7 +114,7 @@ export default function NutritionCalculator() {
         </div>
       </div>
 
-      {/* Moved Food Search and Custom Food Button */}
+      {/* Food Search and Custom Food Button */}
       <div className="flex gap-2 mx-auto max-w-md mt-6 mb-8">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -184,106 +133,8 @@ export default function NutritionCalculator() {
         </CreateCustomFoodDialog>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-6">
-        {/* Calories Card */}
-        <Card className="border-primary/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Flame className="h-5 w-5 text-primary" />
-                {t('nutritionCalculator.calories')}
-              </CardTitle>
-              <Badge variant="outline">{totals.calories.toFixed(0)} / {dailyGoals.calories}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={calculatePercentage(totals.calories, dailyGoals.calories)} className="h-2" />
-          </CardContent>
-        </Card>
-
-        {/* Protein Card */}
-        <Card className="border-accent/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Beef className="h-5 w-5 text-accent" />
-                {t('nutritionCalculator.protein')}
-              </CardTitle>
-              <Badge variant="outline">{totals.protein.toFixed(1)}g / {dailyGoals.protein}g</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={calculatePercentage(totals.protein, dailyGoals.protein)} className="h-2" />
-          </CardContent>
-        </Card>
-
-        {/* Carbs Card */}
-        <Card className="border-warning/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Wheat className="h-5 w-5 text-warning" />
-                {t('nutritionCalculator.carbs')}
-              </CardTitle>
-              <Badge variant="outline">{totals.carbs.toFixed(1)}g / {dailyGoals.carbs}g</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={calculatePercentage(totals.carbs, dailyGoals.carbs)} className="h-2" />
-          </CardContent>
-        </Card>
-
-        {/* Fiber Card */}
-        <Card className="border-green-500/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Salad className="h-5 w-5 text-green-500" />
-                {t('nutritionCalculator.fiber')}
-              </CardTitle>
-              <Badge variant="outline">{totals.fiber.toFixed(1)}g / {dailyGoals.fiber}g</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={calculatePercentage(totals.fiber, dailyGoals.fiber)} className="h-2" />
-          </CardContent>
-        </Card>
-
-        {/* Sugar Card */}
-        <Card className="border-pink-500/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Candy className="h-5 w-5 text-pink-500" />
-                {t('nutritionCalculator.sugar')}
-              </CardTitle>
-              <Badge variant="outline">{totals.sugar.toFixed(1)}g / {dailyGoals.sugar}g</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={calculatePercentage(totals.sugar, dailyGoals.sugar)} className="h-2" />
-          </CardContent>
-        </Card>
-
-        {/* Sodium Card */}
-        <Card className="border-blue-500/20">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Droplet className="h-5 w-5 text-blue-500" />
-                {t('nutritionCalculator.sodium')}
-              </CardTitle>
-              <Badge variant="outline">{totals.sodium.toFixed(0)}mg / {dailyGoals.sodium}mg</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={calculatePercentage(totals.sodium, dailyGoals.sodium)} className="h-2" />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Nutrition Charts */}
-      <NutritionCharts meals={meals} dailyGoals={dailyGoals} />
+      {/* Removed all progress cards */}
+      {/* Removed Nutrition Charts */}
 
       <div className="grid gap-6 lg:grid-cols-2 mb-6">
         {/* Food Database */}
@@ -297,17 +148,7 @@ export default function NutritionCalculator() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {/* The search input and custom food button were moved here */}
-
-              <Tabs value={selectedMealType} onValueChange={(v) => setSelectedMealType(v as any)}>
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="breakfast">{t('nutritionCalculator.breakfast')}</TabsTrigger>
-                  <TabsTrigger value="lunch">{t('nutritionCalculator.lunch')}</TabsTrigger>
-                  <TabsTrigger value="dinner">{t('nutritionCalculator.dinner')}</TabsTrigger>
-                  <TabsTrigger value="snack">{t('nutritionCalculator.snack')}</TabsTrigger>
-                </TabsList>
-              </Tabs>
-
+              {/* Removed Tabs for meal types */}
               <ScrollArea className="h-[400px] pr-4">
                 <div className="space-y-2">
                   {filteredFoods.map((food) => (
@@ -340,13 +181,7 @@ export default function NutritionCalculator() {
                             </Badge>
                           </div>
                         </div>
-                        <Button
-                          size="sm"
-                          onClick={() => addMeal(food)}
-                          className="shrink-0"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
+                        {/* Removed Add button for individual food items */}
                       </div>
                     </Card>
                   ))}
@@ -359,158 +194,11 @@ export default function NutritionCalculator() {
         {/* Saved Meals List */}
         <SavedMealsList
           savedMeals={savedMeals}
-          onAddMealToLog={addSavedMealToLog}
-          onDeleteMeal={handleDeleteSavedMeal}
+          onDeleteMeal={handleDeleteSavedMeal} // Removed onAddMealToLog
         />
       </div>
 
-      {/* Daily Log */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>{t('nutritionCalculator.todaysMeals')}</CardTitle>
-          <CardDescription>{t('nutritionCalculator.todaysMealsDescription')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="all">{t('nutritionCalculator.all')}</TabsTrigger>
-              <TabsTrigger value="breakfast">{t('nutritionCalculator.breakfast')}</TabsTrigger>
-              <TabsTrigger value="lunch">{t('nutritionCalculator.lunch')}</TabsTrigger>
-              <TabsTrigger value="dinner">{t('nutritionCalculator.dinner')}</TabsTrigger>
-              <TabsTrigger value="snack">{t('nutritionCalculator.snack')}</TabsTrigger>
-            </TabsList>
-
-            <ScrollArea className="h-[400px] mt-4">
-              <TabsContent value="all" className="space-y-2 mt-0">
-                {meals.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    {t('nutritionCalculator.noMealsAdded')}
-                  </div>
-                ) : (
-                  meals.map((meal) => (
-                    <Card key={meal.id} className="p-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
-                            <Badge variant="secondary" className="text-xs">
-                              {t(`nutritionCalculator.${meal.mealType}`)}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <Input
-                              type="number"
-                              value={meal.servings}
-                              onChange={(e) => updateServings(meal.id, parseFloat(e.target.value))}
-                              className="w-20 h-7 text-xs"
-                              step="0.5"
-                              min="0.1"
-                            />
-                            <span className="text-xs text-muted-foreground">× {meal.foodItem.serving}</span>
-                          </div>
-                          <div className="flex flex-wrap gap-2 text-xs">
-                            <Badge variant="secondary" className="font-normal">
-                              {(meal.foodItem.calories * meal.servings).toFixed(0)} cal
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              P: {(meal.foodItem.protein * meal.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              C: {(meal.foodItem.carbs * meal.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              V: {((meal.foodItem.fiber || 0) * meal.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              S: {((meal.foodItem.sugar || 0) * meal.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              Na: {((meal.foodItem.sodium || 0) * meal.servings).toFixed(0)}mg
-                            </Badge>
-                          </div>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => removeMeal(meal.id)}
-                          className="shrink-0 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </Card>
-                  ))
-                )}
-              </TabsContent>
-
-              {['breakfast', 'lunch', 'dinner', 'snack'].map((type) => (
-                <TabsContent key={type} value={type} className="space-y-2 mt-0">
-                  {getMealsByType(type).length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      {t('nutritionCalculator.noMealsOfTypeAdded', { type: t(`nutritionCalculator.${type}`) })}
-                    </div>
-                  ) : (
-                    getMealsByType(type).map((meal) => (
-                      <Card key={meal.id} className="p-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Input
-                                type="number"
-                                value={meal.servings}
-                                onChange={(e) => updateServings(meal.id, parseFloat(e.target.value))}
-                                className="w-20 h-7 text-xs"
-                                step="0.5"
-                                min="0.1"
-                              />
-                              <span className="text-xs text-muted-foreground">× {meal.foodItem.serving}</span>
-                            </div>
-                            <div className="flex flex-wrap gap-2 text-xs">
-                              <Badge variant="secondary" className="font-normal">
-                                {(meal.foodItem.calories * meal.servings).toFixed(0)} cal
-                              </Badge>
-                              <Badge variant="outline" className="font-normal">
-                                P: {(meal.foodItem.protein * meal.servings).toFixed(1)}g
-                              </Badge>
-                              <Badge variant="outline" className="font-normal">
-                                C: {(meal.foodItem.carbs * meal.servings).toFixed(1)}g
-                              </Badge>
-                              <Badge variant="outline" className="font-normal">
-                                F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
-                              </Badge>
-                              <Badge variant="outline" className="font-normal">
-                                V: {((meal.foodItem.fiber || 0) * meal.servings).toFixed(1)}g
-                              </Badge>
-                              <Badge variant="outline" className="font-normal">
-                                S: {((meal.foodItem.sugar || 0) * meal.servings).toFixed(1)}g
-                              </Badge>
-                              <Badge variant="outline" className="font-normal">
-                                Na: {((meal.foodItem.sodium || 0) * meal.servings).toFixed(0)}mg
-                              </Badge>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => removeMeal(meal.id)}
-                            className="shrink-0 text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </Card>
-                    ))
-                  )}
-                </TabsContent>
-              ))}
-            </ScrollArea>
-          </Tabs>
-        </CardContent>
-      </Card>
+      {/* Removed Daily Log Card */}
 
       {/* Button to create new saved meal */}
       <div className="mt-6 flex justify-end">

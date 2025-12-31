@@ -9,11 +9,10 @@ import { useTranslation } from 'react-i18next';
 
 interface SavedMealsListProps {
   savedMeals: SavedMeal[];
-  onAddMealToLog: (meal: SavedMeal) => void;
-  onDeleteMeal: (id: string) => void;
+  onDeleteMeal: (id: string) => void; // Removed onAddMealToLog
 }
 
-export default function SavedMealsList({ savedMeals, onAddMealToLog, onDeleteMeal }: SavedMealsListProps) {
+export default function SavedMealsList({ savedMeals, onDeleteMeal }: SavedMealsListProps) {
   const { t } = useTranslation();
 
   const calculateMealTotals = (meal: SavedMeal): NutritionTotals => {
@@ -83,13 +82,7 @@ export default function SavedMealsList({ savedMeals, onAddMealToLog, onDeleteMea
                         </p>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => onAddMealToLog(meal)}
-                          className="shrink-0"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
+                        {/* Removed Add button */}
                         <Button
                           size="sm"
                           variant="ghost"
