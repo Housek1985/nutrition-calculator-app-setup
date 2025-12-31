@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon, Salad, Candy, Droplet, Globe } from 'lucide-react'; // Import Globe icon
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon, Salad, Candy, Droplet, Globe, UtensilsCrossed } from 'lucide-react'; // Import UtensilsCrossed icon
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -19,6 +19,7 @@ import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
 import NutritionCharts from './NutritionCharts';
+import CreateCustomFoodDialog from './CreateCustomFoodDialog'; // Import the new dialog
 
 export default function NutritionCalculator() {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export default function NutritionCalculator() {
 
   const [meals, setMeals] = useLocalStorage<MealEntry[]>('nutrition-meals', []);
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
+  const [customFoods, setCustomFoods] = useLocalStorage<FoodItem[]>('nutrition-custom-foods', []); // New state for custom foods
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
@@ -35,16 +37,20 @@ export default function NutritionCalculator() {
     protein: 150,
     carbs: 250,
     fats: 65,
-    fiber: 30, // New default goal
-    sugar: 25, // New default goal
-    sodium: 2300, // New default goal (in mg)
+    fiber: 30,
+    sugar: 25,
+    sodium: 2300,
   });
 
+  const allAvailableFoods = useMemo(() => {
+    return [...foodDatabase, ...customFoods]; // Combine default and custom foods
+  }, [foodDatabase, customFoods]);
+
   const filteredFoods = useMemo(() => {
-    return foodDatabase.filter(food =>
+    return allAvailableFoods.filter(food =>
       food.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [searchQuery, allAvailableFoods]);
 
   const totals = useMemo((): NutritionTotals => {
     return meals.reduce(
@@ -53,9 +59,9 @@ export default function NutritionCalculator() {
         protein: acc.protein + meal.foodItem.protein * meal.servings,
         carbs: acc.carbs + meal.foodItem.carbs * meal.servings,
         fats: acc.fats + meal.foodItem.fats * meal.servings,
-        fiber: acc.fiber + (meal.foodItem.fiber || 0) * meal.servings, // Include fiber
-        sugar: acc.sugar + (meal.foodItem.sugar || 0) * meal.servings, // Include sugar
-        sodium: acc.sodium + (meal.foodItem.sodium || 0) * meal.servings, // Include sodium
+        fiber: acc.fiber + (meal.foodItem.fiber || 0) * meal.servings,
+        sugar: acc.sugar + (meal.foodItem.sugar || 0) * meal.servings,
+        sodium: acc.sodium + (meal.foodItem.sodium || 0) * meal.servings,
       }),
       { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
     );
@@ -111,6 +117,10 @@ export default function NutritionCalculator() {
   const handleDeleteSavedMeal = (id: string) => {
     setSavedMeals(prev => prev.filter(meal => meal.id !== id));
     toast.info(t('toast.savedMealRemoved'));
+  };
+
+  const handleSaveCustomFood = (newFood: FoodItem) => {
+    setCustomFoods(prev => [...prev, newFood]);
   };
 
   return (
@@ -278,6 +288,12 @@ export default function NutritionCalculator() {
                     className="pl-9"
                   />
                 </div>
+                <CreateCustomFoodDialog onSave={handleSaveCustomFood}>
+                  <Button variant="outline" size="icon">
+                    <Plus className="h-4 w-4" />
+                    <span className="sr-only">{t('nutritionCalculator.createCustomFood')}</span>
+                  </Button>
+                </CreateCustomFoodDialog>
               </div>
 
               <Tabs value={selectedMealType} onValueChange={(v) => setSelectedMealType(v as any)}>

@@ -40,7 +40,12 @@
     "dailySummary": "Daily Nutrition Summary",
     "dailySummaryDescription": "Overview of your daily intake vs. goals.",
     "current": "Current",
-    "goal": "Goal"
+    "goal": "Goal",
+    "createCustomFood": "Create Custom Food",
+    "createCustomFoodDescription": "Add a new food item not found in the database.",
+    "foodName": "Food Name",
+    "servingSize": "Serving Size",
+    "saveFood": "Save Food"
   },
   "toast": {
     "foodAdded": "Added {{foodName}} to {{mealType}}",
@@ -49,7 +54,9 @@
     "mealItemsRequired": "Add at least one food item to the meal.",
     "mealSaved": "Meal '{{mealName}}' saved!",
     "savedMealAdded": "Added '{{mealName}}' to {{mealType}}",
-    "savedMealRemoved": "Saved meal removed"
+    "savedMealRemoved": "Saved meal removed",
+    "foodNameRequired": "Food name is required.",
+    "customFoodSaved": "Custom food '{{foodName}}' saved!"
   },
   "settings": {
     "title": "Settings",

@@ -40,7 +40,12 @@
     "dailySummary": "Dnevni povzetek prehrane",
     "dailySummaryDescription": "Pregled vašega dnevnega vnosa v primerjavi s cilji.",
     "current": "Trenutno",
-    "goal": "Cilj"
+    "goal": "Cilj",
+    "createCustomFood": "Ustvari lastno živilo",
+    "createCustomFoodDescription": "Dodajte novo živilo, ki ga ni v bazi.",
+    "foodName": "Ime živila",
+    "servingSize": "Velikost porcije",
+    "saveFood": "Shrani živilo"
   },
   "toast": {
     "foodAdded": "Dodano {{foodName}} k {{mealType}}",
@@ -49,7 +54,9 @@
     "mealItemsRequired": "Dodajte vsaj eno živilo k obroku.",
     "mealSaved": "Obrok '{{mealName}}' shranjen!",
     "savedMealAdded": "Dodano '{{mealName}}' k {{mealType}}",
-    "savedMealRemoved": "Shranjeni obrok odstranjen"
+    "savedMealRemoved": "Shranjeni obrok odstranjen",
+    "foodNameRequired": "Ime živila je obvezno.",
+    "customFoodSaved": "Lastno živilo '{{foodName}}' shranjeno!"
   },
   "settings": {
     "title": "Nastavitve",
