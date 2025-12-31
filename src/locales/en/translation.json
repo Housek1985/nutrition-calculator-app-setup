@@ -33,7 +33,11 @@
     "mealContents": "Meal Contents",
     "noItemsInMeal": "No items added to this meal yet.",
     "cancel": "Cancel",
-    "saveMeal": "Save Meal"
+    "saveMeal": "Save Meal",
+    "dailySummary": "Daily Nutrition Summary",
+    "dailySummaryDescription": "Overview of your daily intake vs. goals.",
+    "current": "Current",
+    "goal": "Goal"
   },
   "toast": {
     "foodAdded": "Added {{foodName}} to {{mealType}}",

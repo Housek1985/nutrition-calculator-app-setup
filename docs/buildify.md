@@ -18,9 +18,9 @@
 - [x] Create main calculator interface
 - [x] Build food database component
 - [x] Implement nutrition calculations
-- [ ] Add Slovenian language support
-- [ ] Add light/dark theme toggle
-- [ ] Add meal planning features
-- [ ] Implement data persistence
+- [x] Add Slovenian language support
+- [x] Add light/dark theme toggle
+- [x] Add meal planning features
+- [x] Implement data persistence
 - [ ] Add charts for nutrition trends
 - [ ] Implement custom food creation

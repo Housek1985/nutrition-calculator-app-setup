@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon } from 'lucide-react'; // Import SettingsIcon
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar } from 'lucide-react'; // Import ChartBar icon
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -17,7 +17,8 @@ import { useTheme } from 'next-themes';
 import CreateSavedMealDialog from './CreateSavedMealDialog';
 import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
-import SettingsDialog from './SettingsDialog'; // Import SettingsDialog
+import SettingsDialog from './SettingsDialog';
+import NutritionCharts from './NutritionCharts'; // Import NutritionCharts
 
 export default function NutritionCalculator() {
   const { t } = useTranslation();
@@ -174,6 +175,9 @@ export default function NutritionCalculator() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Nutrition Charts */}
+      <NutritionCharts meals={meals} dailyGoals={dailyGoals} />
 
       <div className="grid gap-6 lg:grid-cols-2 mb-6">
         {/* Food Database */}
@@ -384,54 +388,6 @@ export default function NutritionCalculator() {
           </Tabs>
         </CardContent>
       </Card>
-
-      {/* Daily Goals Settings - Removed from here, now in SettingsDialog */}
-      {/* <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>{t('nutritionCalculator.dailyGoals')}</CardTitle>
-          <CardDescription>{t('nutritionCalculator.dailyGoalsDescription')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="space-y-2">
-              <Label htmlFor="goal-calories">{t('nutritionCalculator.calories')}</Label>
-              <Input
-                id="goal-calories"
-                type="number"
-                value={dailyGoals.calories}
-                onChange={(e) => setDailyGoals({ ...dailyGoals, calories: parseInt(e.target.value) })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="goal-protein">{t('nutritionCalculator.protein')} (g)</Label>
-              <Input
-                id="goal-protein"
-                type="number"
-                value={dailyGoals.protein}
-                onChange={(e) => setDailyGoals({ ...dailyGoals, protein: parseInt(e.target.value) })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="goal-carbs">{t('nutritionCalculator.carbs')} (g)</Label>
-              <Input
-                id="goal-carbs"
-                type="number"
-                value={dailyGoals.carbs}
-                onChange={(e) => setDailyGoals({ ...dailyGoals, carbs: parseInt(e.target.value) })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="goal-fats">{t('nutritionCalculator.fats')} (g)</Label>
-              <Input
-                id="goal-fats"
-                type="number"
-                value={dailyGoals.fats}
-                onChange={(e) => setDailyGoals({ ...dailyGoals, fats: parseInt(e.target.value) })}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card> */}
 
       {/* Button to create new saved meal */}
       <div className="mt-6 flex justify-end">
