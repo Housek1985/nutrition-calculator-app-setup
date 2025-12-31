@@ -6,28 +6,31 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { useEffect } from 'react';
-import { Salad, Globe } from 'lucide-react'; // Import Salad and Globe icon
+import { Salad, Globe } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSession } from '@/contexts/SessionContext'; // Uvozi useSession
 
 export default function Login() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const [isGuest, setIsGuest] = useLocalStorage('is-guest', false);
-  const { language, changeLanguage } = useLanguage(); // Use the language context
+  const { isGuest: sessionIsGuest, setIsGuest: setSessionIsGuest } = useSession(); // Pridobi isGuest in setIsGuest iz SessionContext
+  const { language, changeLanguage } = useLanguage();
 
   useEffect(() => {
-    if (isGuest) {
+    // Če je že gost ali avtenticiran, preusmeri na domačo stran
+    if (sessionIsGuest) { // Uporabi isGuest iz SessionContext
       navigate('/');
     }
-    // Ensure the i18n language is set to 'sl' on initial load if it's not already
+    // Zagotovi, da je jezik i18n nastavljen na 'sl' ob začetnem nalaganju, če še ni
     if (i18n.language !== 'sl' && i18n.language !== 'en') {
       changeLanguage('sl');
     }
-  }, [isGuest, navigate, i18n, changeLanguage]);
+  }, [sessionIsGuest, navigate, i18n, changeLanguage]);
 
   const handleGuestLogin = () => {
-    setIsGuest(true);
+    setSessionIsGuest(true); // Posodobi stanje isGuest v SessionContext
+    localStorage.setItem('is-guest', JSON.stringify(true)); // Eksplicitno nastavi local storage
     navigate('/');
   };
 
@@ -41,7 +44,7 @@ export default function Login() {
         <div className="bg-card p-6 rounded-lg shadow-lg border border-border">
           <Auth
             supabaseClient={supabase}
-            providers={[]} // Only email/password, no social providers for now
+            providers={[]}
             appearance={{
               theme: ThemeSupa,
               variables: {
@@ -62,7 +65,7 @@ export default function Login() {
                 },
               },
             }}
-            theme="light" // Use light theme, will be overridden by ThemeProvider if dark mode is active
+            theme="light"
           />
         </div>
         <div className="text-center space-y-4">
