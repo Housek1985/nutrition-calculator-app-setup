@@ -2,22 +2,29 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next'; // Popravljena sintaksa uvoza
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { useEffect } from 'react';
-import { Salad } from 'lucide-react'; // Import Salad icon
+import { Salad, Globe } from 'lucide-react'; // Import Salad and Globe icon
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Login() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [isGuest, setIsGuest] = useLocalStorage('is-guest', false);
+  const { language, changeLanguage } = useLanguage(); // Use the language context
 
   useEffect(() => {
     if (isGuest) {
       navigate('/');
     }
-  }, [isGuest, navigate]);
+    // Ensure the i18n language is set to 'sl' on initial load if it's not already
+    if (i18n.language !== 'sl' && i18n.language !== 'en') {
+      changeLanguage('sl');
+    }
+  }, [isGuest, navigate, i18n, changeLanguage]);
 
   const handleGuestLogin = () => {
     setIsGuest(true);
@@ -28,7 +35,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <div className="w-full max-w-md space-y-6">
         <h1 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent flex items-center justify-center gap-2">
-          <Salad className="h-9 w-9 text-primary" /> {/* Added Salad icon here */}
+          <Salad className="h-9 w-9 text-primary" />
           {t('login.welcome')}
         </h1>
         <div className="bg-card p-6 rounded-lg shadow-lg border border-border">
@@ -58,10 +65,22 @@ export default function Login() {
             theme="light" // Use light theme, will be overridden by ThemeProvider if dark mode is active
           />
         </div>
-        <div className="text-center">
+        <div className="text-center space-y-4">
           <Button variant="outline" onClick={handleGuestLogin} className="w-full">
             {t('login.continueAsGuest')}
           </Button>
+          <div className="flex items-center justify-center gap-2">
+            <Globe className="h-5 w-5 text-muted-foreground" />
+            <Select onValueChange={(value) => changeLanguage(value as 'en' | 'sl')} value={language}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={t('settings.language')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="sl">Slovenščina</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ i18n
         translation: slTranslation,
       },
     },
-    lng: 'en', // default language
+    lng: 'sl', // default language changed to Slovenian
     fallbackLng: 'en', // fallback language if translation is missing
     interpolation: {
       escapeValue: false, // react already escapes by default
