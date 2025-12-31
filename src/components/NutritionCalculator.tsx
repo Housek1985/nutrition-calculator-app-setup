@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, UtensilsCrossed } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles } from 'lucide-react'; // Removed UtensilsCrossed, added Sparkles
 import { foodDatabase } from '@/data/foodDatabase';
 import { DailyGoals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -18,7 +18,7 @@ import CreateSavedMealDialog from './CreateSavedMealDialog';
 import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
-import CreateCustomFoodDialog from './CreateCustomFoodDialog';
+// Removed import CreateCustomFoodDialog from './CreateCustomFoodDialog';
 
 interface DisplayNutrition {
   calories: number;
@@ -80,9 +80,10 @@ export default function NutritionCalculator() {
   const { theme, setTheme } = useTheme();
 
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
-  const [customFoods, setCustomFoods] = useLocalStorage<FoodItem[]>('nutrition-custom-foods', []);
+  // Removed customFoods state
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState(''); // New state for confirmed search
   const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', {
     calories: 2000,
     protein: 150,
@@ -93,30 +94,30 @@ export default function NutritionCalculator() {
     sodium: 2300,
   });
 
-  const [recognizedFood, setRecognizedFood] = useState<FoodItem | null>(null); // New state for recognized food
+  const [recognizedFood, setRecognizedFood] = useState<FoodItem | null>(null);
 
   const allAvailableFoods = useMemo(() => {
-    return [...foodDatabase, ...customFoods];
-  }, [foodDatabase, customFoods]);
+    return [...foodDatabase]; // Removed customFoods
+  }, [foodDatabase]);
 
   const filteredFoods = useMemo(() => {
     return allAvailableFoods.filter(food =>
-      food.name.toLowerCase().includes(searchQuery.toLowerCase())
+      food.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase())
     );
-  }, [searchQuery, allAvailableFoods]);
+  }, [confirmedSearchQuery, allAvailableFoods]);
 
-  // Effect to update recognizedFood based on search query
+  // Effect to update recognizedFood based on confirmed search query
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (confirmedSearchQuery.trim() === '') {
       setRecognizedFood(null);
       return;
     }
-    // Find the first food that matches the search query
+    // Find the first food that matches the confirmed search query
     const foundFood = allAvailableFoods.find(food =>
-      food.name.toLowerCase().includes(searchQuery.toLowerCase())
+      food.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase())
     );
     setRecognizedFood(foundFood || null);
-  }, [searchQuery, allAvailableFoods]);
+  }, [confirmedSearchQuery, allAvailableFoods]);
 
   const nutritionPer100g = useMemo(() => {
     if (!recognizedFood) return null;
@@ -132,8 +133,8 @@ export default function NutritionCalculator() {
     toast.info(t('toast.savedMealRemoved'));
   };
 
-  const handleSaveCustomFood = (newFood: FoodItem) => {
-    setCustomFoods(prev => [...prev, newFood]);
+  const handleConfirmSearch = () => {
+    setConfirmedSearchQuery(searchQuery);
   };
 
   return (
@@ -178,7 +179,7 @@ export default function NutritionCalculator() {
         </div>
       </div>
 
-      {/* Food Search and Custom Food Button */}
+      {/* Food Search and Confirm Button */}
       <div className="flex gap-2 mx-auto max-w-md mt-6 mb-8">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -186,15 +187,23 @@ export default function NutritionCalculator() {
             placeholder={t('nutritionCalculator.searchFoods')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleConfirmSearch();
+              }
+            }}
             className="pl-9"
           />
         </div>
-        <CreateCustomFoodDialog onSave={handleSaveCustomFood}>
-          <Button variant="outline" size="icon">
-            <Plus className="h-4 w-4" />
-            <span className="sr-only">{t('nutritionCalculator.createCustomFood')}</span>
-          </Button>
-        </CreateCustomFoodDialog>
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={handleConfirmSearch} 
+          disabled={!searchQuery.trim()}
+        >
+          <Sparkles className="h-4 w-4" />
+          <span className="sr-only">{t('nutritionCalculator.confirmSearch')}</span>
+        </Button>
       </div>
 
       {/* Recognized Food Nutrition Card */}

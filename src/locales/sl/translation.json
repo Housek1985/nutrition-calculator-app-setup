@@ -32,13 +32,12 @@
     "noItemsInMeal": "V ta obrok še niso dodana živila.",
     "cancel": "Prekliči",
     "saveMeal": "Shrani obrok",
-    "createCustomFood": "Ustvari lastno živilo",
-    "createCustomFoodDescription": "Dodajte novo živilo, ki ga ni v bazi.",
     "foodName": "Ime živila",
     "servingSize": "Velikost porcije",
     "saveFood": "Shrani živilo",
     "nutritionPer100g": "Prehrana za {{foodName}} (na 100g)",
-    "nutritionPer100gDescription": "Ocenjene hranilne vrednosti na 100 gramov."
+    "nutritionPer100gDescription": "Ocenjene hranilne vrednosti na 100 gramov.",
+    "confirmSearch": "Potrdi iskanje"
   },
   "toast": {
     "mealNameRequired": "Ime obroka je obvezno.",

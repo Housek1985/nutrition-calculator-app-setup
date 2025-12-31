@@ -32,13 +32,12 @@
     "noItemsInMeal": "No items added to this meal yet.",
     "cancel": "Cancel",
     "saveMeal": "Save Meal",
-    "createCustomFood": "Create Custom Food",
-    "createCustomFoodDescription": "Add a new food item not found in the database.",
     "foodName": "Food Name",
     "servingSize": "Serving Size",
     "saveFood": "Save Food",
     "nutritionPer100g": "Nutrition for {{foodName}} (per 100g)",
-    "nutritionPer100gDescription": "Estimated nutritional values per 100 grams."
+    "nutritionPer100gDescription": "Estimated nutritional values per 100 grams.",
+    "confirmSearch": "Confirm Search"
   },
   "toast": {
     "mealNameRequired": "Meal name is required.",
