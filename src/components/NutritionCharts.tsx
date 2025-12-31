@@ -17,11 +17,14 @@ export default function NutritionCharts({ meals, dailyGoals }: NutritionChartsPr
     return meals.reduce(
       (acc, meal) => ({
         calories: acc.calories + meal.foodItem.calories * meal.servings,
-        protein: acc.protein + meal.foodItem.protein * meal.servings, // Popravljena vrstica
+        protein: acc.protein + meal.foodItem.protein * meal.servings,
         carbs: acc.carbs + meal.foodItem.carbs * meal.servings,
         fats: acc.fats + meal.foodItem.fats * meal.servings,
+        fiber: acc.fiber + (meal.foodItem.fiber || 0) * meal.servings,
+        sugar: acc.sugar + (meal.foodItem.sugar || 0) * meal.servings,
+        sodium: acc.sodium + (meal.foodItem.sodium || 0) * meal.servings,
       }),
-      { calories: 0, protein: 0, carbs: 0, fats: 0 }
+      { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
     );
   }, [meals]);
 
@@ -45,6 +48,21 @@ export default function NutritionCharts({ meals, dailyGoals }: NutritionChartsPr
       name: t('nutritionCalculator.fats'),
       current: totals.fats,
       goal: dailyGoals.fats,
+    },
+    {
+      name: t('nutritionCalculator.fiber'),
+      current: totals.fiber,
+      goal: dailyGoals.fiber,
+    },
+    {
+      name: t('nutritionCalculator.sugar'),
+      current: totals.sugar,
+      goal: dailyGoals.sugar,
+    },
+    {
+      name: t('nutritionCalculator.sodium'),
+      current: totals.sodium,
+      goal: dailyGoals.sodium,
     },
   ];
 

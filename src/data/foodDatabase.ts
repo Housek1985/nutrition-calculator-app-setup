@@ -1,4 +1,3 @@
-
 import { FoodItem } from '@/types/nutrition';
 
 export const foodDatabase: FoodItem[] = [
@@ -12,6 +11,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 0,
     fats: 3.6,
     fiber: 0,
+    sugar: 0,
+    sodium: 65,
   },
   {
     id: '2',
@@ -22,6 +23,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 0,
     fats: 13,
     fiber: 0,
+    sugar: 0,
+    sodium: 59,
   },
   {
     id: '3',
@@ -32,6 +35,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 1,
     fats: 10,
     fiber: 0,
+    sugar: 1,
+    sodium: 140,
   },
   {
     id: '4',
@@ -42,6 +47,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 6,
     fats: 0.7,
     fiber: 0,
+    sugar: 6,
+    sodium: 68,
   },
   // Carbs
   {
@@ -53,6 +60,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 45,
     fats: 1.8,
     fiber: 3.5,
+    sugar: 0,
+    sodium: 10,
   },
   {
     id: '6',
@@ -63,6 +72,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 28,
     fats: 3.6,
     fiber: 4,
+    sugar: 0,
+    sodium: 2,
   },
   {
     id: '7',
@@ -73,6 +84,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 24,
     fats: 0.2,
     fiber: 3.8,
+    sugar: 7,
+    sodium: 41,
   },
   {
     id: '8',
@@ -83,6 +96,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 28,
     fats: 2,
     fiber: 4,
+    sugar: 4,
+    sodium: 280,
   },
   // Vegetables
   {
@@ -94,6 +109,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 6,
     fats: 0.3,
     fiber: 2.4,
+    sugar: 1.5,
+    sodium: 30,
   },
   {
     id: '10',
@@ -104,6 +121,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 1.1,
     fats: 0.1,
     fiber: 0.7,
+    sugar: 0.1,
+    sodium: 24,
   },
   {
     id: '11',
@@ -114,6 +133,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 12,
     fats: 21,
     fiber: 10,
+    sugar: 0.4,
+    sodium: 11,
   },
   // Fruits
   {
@@ -125,6 +146,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 27,
     fats: 0.4,
     fiber: 3.1,
+    sugar: 14,
+    sodium: 1,
   },
   {
     id: '13',
@@ -135,6 +158,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 25,
     fats: 0.3,
     fiber: 4.4,
+    sugar: 19,
+    sodium: 2,
   },
   {
     id: '14',
@@ -145,6 +170,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 21,
     fats: 0.5,
     fiber: 3.6,
+    sugar: 15,
+    sodium: 1,
   },
   // Nuts & Seeds
   {
@@ -156,6 +183,8 @@ export const foodDatabase: FoodItem[] = [
     carbs: 6,
     fats: 14,
     fiber: 3.5,
+    sugar: 1.2,
+    sodium: 0,
   },
   {
     id: '16',
@@ -166,5 +195,7 @@ export const foodDatabase: FoodItem[] = [
     carbs: 7,
     fats: 16,
     fiber: 2,
+    sugar: 3,
+    sodium: 140,
   },
 ];

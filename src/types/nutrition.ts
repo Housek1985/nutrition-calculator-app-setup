@@ -6,7 +6,9 @@ export interface FoodItem {
   protein: number;
   carbs: number;
   fats: number;
-  fiber?: number;
+  fiber: number; // Made mandatory
+  sugar: number; // New
+  sodium: number; // New (in mg)
 }
 
 export interface MealEntry {
@@ -22,6 +24,9 @@ export interface DailyGoals {
   protein: number;
   carbs: number;
   fats: number;
+  fiber: number; // New
+  sugar: number; // New
+  sodium: number; // New
 }
 
 export interface NutritionTotals {
@@ -29,6 +34,9 @@ export interface NutritionTotals {
   protein: number;
   carbs: number;
   fats: number;
+  fiber: number; // New
+  sugar: number; // New
+  sodium: number; // New
 }
 
 // New interface for a food item within a saved meal

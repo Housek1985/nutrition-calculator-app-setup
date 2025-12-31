@@ -23,8 +23,11 @@ export default function SavedMealsList({ savedMeals, onAddMealToLog, onDeleteMea
         protein: acc.protein + item.foodItem.protein * item.servings,
         carbs: acc.carbs + item.foodItem.carbs * item.servings,
         fats: acc.fats + item.foodItem.fats * item.servings,
+        fiber: acc.fiber + (item.foodItem.fiber || 0) * item.servings,
+        sugar: acc.sugar + (item.foodItem.sugar || 0) * item.servings,
+        sodium: acc.sodium + (item.foodItem.sodium || 0) * item.servings,
       }),
-      { calories: 0, protein: 0, carbs: 0, fats: 0 }
+      { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
     );
   };
 
@@ -64,6 +67,15 @@ export default function SavedMealsList({ savedMeals, onAddMealToLog, onDeleteMea
                           </Badge>
                           <Badge variant="outline" className="font-normal">
                             F: {totals.fats.toFixed(1)}g
+                          </Badge>
+                          <Badge variant="outline" className="font-normal">
+                            V: {totals.fiber.toFixed(1)}g
+                          </Badge>
+                          <Badge variant="outline" className="font-normal">
+                            S: {totals.sugar.toFixed(1)}g
+                          </Badge>
+                          <Badge variant="outline" className="font-normal">
+                            Na: {totals.sodium.toFixed(0)}mg
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">

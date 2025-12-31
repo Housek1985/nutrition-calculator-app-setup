@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Trash2, Search } from 'lucide-react';
-import { FoodItem, SavedMeal, SavedMealFoodItem } from '@/types/nutrition';
+import { FoodItem, SavedMeal, SavedMealFoodItem, NutritionTotals } from '@/types/nutrition'; // Import NutritionTotals
 import { foodDatabase } from '@/data/foodDatabase';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';

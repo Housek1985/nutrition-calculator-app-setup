@@ -123,6 +123,33 @@ export default function SettingsDialog({ dailyGoals, setDailyGoals, children }: 
                   onChange={(e) => setDailyGoals({ ...dailyGoals, fats: parseInt(e.target.value) })}
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="goal-fiber-settings">{t('nutritionCalculator.fiber')} (g)</Label>
+                <Input
+                  id="goal-fiber-settings"
+                  type="number"
+                  value={dailyGoals.fiber}
+                  onChange={(e) => setDailyGoals({ ...dailyGoals, fiber: parseInt(e.target.value) })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="goal-sugar-settings">{t('nutritionCalculator.sugar')} (g)</Label>
+                <Input
+                  id="goal-sugar-settings"
+                  type="number"
+                  value={dailyGoals.sugar}
+                  onChange={(e) => setDailyGoals({ ...dailyGoals, sugar: parseInt(e.target.value) })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="goal-sodium-settings">{t('nutritionCalculator.sodium')} (mg)</Label>
+                <Input
+                  id="goal-sodium-settings"
+                  type="number"
+                  value={dailyGoals.sodium}
+                  onChange={(e) => setDailyGoals({ ...dailyGoals, sodium: parseInt(e.target.value) })}
+                />
+              </div>
             </div>
           </div>
         </div>

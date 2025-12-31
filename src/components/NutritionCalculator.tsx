@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon } from 'lucide-react'; // Import Sun and Moon icons
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon, Salad, Candy, Droplet } from 'lucide-react'; // Changed Salt to Droplet
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -35,6 +35,9 @@ export default function NutritionCalculator() {
     protein: 150,
     carbs: 250,
     fats: 65,
+    fiber: 30, // New default goal
+    sugar: 25, // New default goal
+    sodium: 2300, // New default goal (in mg)
   });
 
   const filteredFoods = useMemo(() => {
@@ -50,8 +53,11 @@ export default function NutritionCalculator() {
         protein: acc.protein + meal.foodItem.protein * meal.servings,
         carbs: acc.carbs + meal.foodItem.carbs * meal.servings,
         fats: acc.fats + meal.foodItem.fats * meal.servings,
+        fiber: acc.fiber + (meal.foodItem.fiber || 0) * meal.servings, // Include fiber
+        sugar: acc.sugar + (meal.foodItem.sugar || 0) * meal.servings, // Include sugar
+        sodium: acc.sodium + (meal.foodItem.sodium || 0) * meal.servings, // Include sodium
       }),
-      { calories: 0, protein: 0, carbs: 0, fats: 0 }
+      { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
     );
   }, [meals]);
 
@@ -139,7 +145,7 @@ export default function NutritionCalculator() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-6"> {/* Adjusted grid columns */}
         {/* Calories Card */}
         <Card className="border-primary/20">
           <CardHeader className="pb-3">
@@ -185,6 +191,54 @@ export default function NutritionCalculator() {
           </CardHeader>
           <CardContent>
             <Progress value={calculatePercentage(totals.carbs, dailyGoals.carbs)} className="h-2" />
+          </CardContent>
+        </Card>
+
+        {/* Fiber Card */}
+        <Card className="border-green-500/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Salad className="h-5 w-5 text-green-500" />
+                {t('nutritionCalculator.fiber')}
+              </CardTitle>
+              <Badge variant="outline">{totals.fiber.toFixed(1)}g / {dailyGoals.fiber}g</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Progress value={calculatePercentage(totals.fiber, dailyGoals.fiber)} className="h-2" />
+          </CardContent>
+        </Card>
+
+        {/* Sugar Card */}
+        <Card className="border-pink-500/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Candy className="h-5 w-5 text-pink-500" />
+                {t('nutritionCalculator.sugar')}
+              </CardTitle>
+              <Badge variant="outline">{totals.sugar.toFixed(1)}g / {dailyGoals.sugar}g</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Progress value={calculatePercentage(totals.sugar, dailyGoals.sugar)} className="h-2" />
+          </CardContent>
+        </Card>
+
+        {/* Sodium Card */}
+        <Card className="border-blue-500/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Droplet className="h-5 w-5 text-blue-500" /> {/* Changed Salt to Droplet */}
+                {t('nutritionCalculator.sodium')}
+              </CardTitle>
+              <Badge variant="outline">{totals.sodium.toFixed(0)}mg / {dailyGoals.sodium}mg</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Progress value={calculatePercentage(totals.sodium, dailyGoals.sodium)} className="h-2" />
           </CardContent>
         </Card>
       </div>
@@ -245,6 +299,15 @@ export default function NutritionCalculator() {
                             </Badge>
                             <Badge variant="outline" className="font-normal">
                               F: {food.fats}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              V: {food.fiber}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              S: {food.sugar}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              Na: {food.sodium}mg
                             </Badge>
                           </div>
                         </div>
@@ -329,6 +392,15 @@ export default function NutritionCalculator() {
                             <Badge variant="outline" className="font-normal">
                               F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
                             </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              V: {((meal.foodItem.fiber || 0) * meal.servings).toFixed(1)}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              S: {((meal.foodItem.sugar || 0) * meal.servings).toFixed(1)}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              Na: {((meal.foodItem.sodium || 0) * meal.servings).toFixed(0)}mg
+                            </Badge>
                           </div>
                         </div>
                         <Button
@@ -380,6 +452,15 @@ export default function NutritionCalculator() {
                               </Badge>
                               <Badge variant="outline" className="font-normal">
                                 F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                V: {((meal.foodItem.fiber || 0) * meal.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                S: {((meal.foodItem.sugar || 0) * meal.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                Na: {((meal.foodItem.sodium || 0) * meal.servings).toFixed(0)}mg
                               </Badge>
                             </div>
                           </div>
