@@ -21,23 +21,24 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Sun, Moon, Settings as SettingsIcon, Eraser } from 'lucide-react';
+import { Sun, Moon, Settings as SettingsIcon, Eraser, Globe } from 'lucide-react'; // Dodana ikona Globe
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from 'next-themes';
 import { DailyGoals } from '@/types/nutrition';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'; // Uvozi Select komponente
 
 interface SettingsDialogProps {
   dailyGoals: DailyGoals;
   setDailyGoals: (goals: DailyGoals) => void;
-  onResetAllData: () => void; // New prop for resetting all data
+  onResetAllData: () => void;
   children: React.ReactNode;
 }
 
 export default function SettingsDialog({ dailyGoals, setDailyGoals, onResetAllData, children }: SettingsDialogProps) {
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage();
+  const { language, changeLanguage } = useLanguage(); // Uporabi useLanguage hook
   const { theme, setTheme } = useTheme();
 
   return (
@@ -69,6 +70,24 @@ export default function SettingsDialog({ dailyGoals, setDailyGoals, onResetAllDa
                 <Moon className="h-4 w-4 mr-2" /> {t('settings.darkTheme')}
               </Button>
             </div>
+          </div>
+
+          <Separator />
+
+          {/* Language Settings */}
+          <div className="space-y-2">
+            <Label htmlFor="language-select" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" /> {t('settings.language')}
+            </Label>
+            <Select onValueChange={(value) => changeLanguage(value as 'en' | 'sl')} value={language}>
+              <SelectTrigger id="language-select" className="w-full">
+                <SelectValue placeholder={t('settings.language')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="sl">Slovenščina</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <Separator />

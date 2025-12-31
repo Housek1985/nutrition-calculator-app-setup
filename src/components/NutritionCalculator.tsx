@@ -80,7 +80,7 @@ function calculateNutritionPer100g(food: FoodItem): DisplayNutrition | null {
 
 export default function NutritionCalculator() {
   const { t, i18n } = useTranslation();
-  const { language, changeLanguage } = useLanguage();
+  const { language, changeLanguage } = useLanguage(); // language and changeLanguage are still used for the ImageFoodRecognizer and other components that might need it
   const { theme, setTheme } = useTheme();
 
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
@@ -253,16 +253,6 @@ export default function NutritionCalculator() {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
-          {/* Language Toggle Button */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => changeLanguage(language === 'en' ? 'sl' : 'en')}
-          >
-            <Globe className="h-[1.2rem] w-[1.2rem]" />
-            <span className="sr-only">Toggle language</span>
-          </Button>
-
           {/* Image Food Recognizer Button */}
           <ImageFoodRecognizer
             allAvailableFoods={allAvailableFoods}
@@ -325,7 +315,6 @@ export default function NutritionCalculator() {
                 <Apple className="h-5 w-5" />
                 {t('nutritionCalculator.foodDatabase')}
               </CardTitle>
-              <CardDescription>{t('nutritionCalculator.foodDatabaseDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
