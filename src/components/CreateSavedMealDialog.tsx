@@ -14,17 +14,17 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Trash2, Search } from 'lucide-react';
-import { FoodItem, SavedMeal, SavedMealFoodItem, NutritionTotals } from '@/types/nutrition'; // Import NutritionTotals
-import { foodDatabase } from '@/data/foodDatabase';
+import { FoodItem, SavedMeal, SavedMealFoodItem, NutritionTotals } from '@/types/nutrition';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 interface CreateSavedMealDialogProps {
   onSave: (meal: SavedMeal) => void;
   children: React.ReactNode;
+  allAvailableFoods: FoodItem[]; // Add this prop
 }
 
-export default function CreateSavedMealDialog({ onSave, children }: CreateSavedMealDialogProps) {
+export default function CreateSavedMealDialog({ onSave, children, allAvailableFoods }: CreateSavedMealDialogProps) { // Accept allAvailableFoods
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [mealName, setMealName] = useState('');
@@ -34,14 +34,14 @@ export default function CreateSavedMealDialog({ onSave, children }: CreateSavedM
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredFoods = useMemo(() => {
-    return foodDatabase.filter(food =>
+    return allAvailableFoods.filter(food => // Use allAvailableFoods here
       food.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [searchQuery, allAvailableFoods]); // Add allAvailableFoods to dependencies
 
   const handleAddFoodToMeal = () => {
     if (selectedFoodId && servings > 0) {
-      const food = foodDatabase.find(f => f.id === selectedFoodId);
+      const food = allAvailableFoods.find(f => f.id === selectedFoodId); // Use allAvailableFoods here
       if (food) {
         const existingItemIndex = currentMealItems.findIndex(item => item.foodItem.id === food.id);
         if (existingItemIndex > -1) {
@@ -50,6 +50,7 @@ export default function CreateSavedMealDialog({ onSave, children }: CreateSavedM
           updatedItems[existingItemIndex].servings += servings;
           setCurrentMealItems(updatedItems);
         } else {
+          // When adding to currentMealItems, store the localized food object
           setCurrentMealItems([...currentMealItems, { foodItem: food, servings }]);
         }
         setSelectedFoodId(undefined);
@@ -76,7 +77,7 @@ export default function CreateSavedMealDialog({ onSave, children }: CreateSavedM
     const newSavedMeal: SavedMeal = {
       id: Date.now().toString(),
       name: mealName.trim(),
-      items: currentMealItems,
+      items: currentMealItems, // currentMealItems already contains localized food items
     };
     onSave(newSavedMeal);
     toast.success(t('toast.mealSaved', { mealName: mealName.trim() }));

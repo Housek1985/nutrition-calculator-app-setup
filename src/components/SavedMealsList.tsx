@@ -3,17 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Utensils } from 'lucide-react';
-import { SavedMeal, NutritionTotals } from '@/types/nutrition';
-import { useTranslation } from 'react-i18next';
+import { Trash2, Utensils } from 'lucide-react';
+import { SavedMeal, NutritionTotals, FoodItem } from '@/types/nutrition'; // Import FoodItem
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 interface SavedMealsListProps {
   savedMeals: SavedMeal[];
-  onDeleteMeal: (id: string) => void; // Removed onAddMealToLog
+  onDeleteMeal: (id: string) => void;
+  allAvailableFoods: FoodItem[]; // Add this prop
 }
 
-export default function SavedMealsList({ savedMeals, onDeleteMeal }: SavedMealsListProps) {
-  const { t } = useTranslation();
+export default function SavedMealsList({ savedMeals, onDeleteMeal, allAvailableFoods }: SavedMealsListProps) { // Accept allAvailableFoods
+  const { t } = useTranslation(); // Get t for translations
 
   const calculateMealTotals = (meal: SavedMeal): NutritionTotals => {
     return meal.items.reduce(
@@ -78,11 +79,15 @@ export default function SavedMealsList({ savedMeals, onDeleteMeal }: SavedMealsL
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {meal.items.map(item => `${item.foodItem.name} (${item.servings})`).join(', ')}
+                          {meal.items.map(item => {
+                            // Find the localized food item from allAvailableFoods
+                            const localizedFood = allAvailableFoods.find(f => f.id === item.foodItem.id);
+                            const displayName = localizedFood ? localizedFood.name : item.foodItem.name;
+                            return `${displayName} (${item.servings})`;
+                          }).join(', ')}
                         </p>
                       </div>
                       <div className="flex flex-col gap-2">
-                        {/* Removed Add button */}
                         <Button
                           size="sm"
                           variant="ghost"

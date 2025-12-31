@@ -269,44 +269,6 @@ export default function NutritionCalculator() {
         </Button>
       </div>
 
-      {/* Recognized Food Nutrition Card - This will now disappear after adding to log */}
-      {/* {recognizedFood && displayNutrition && (
-        <Card className="mx-auto max-w-md mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Apple className="h-5 w-5" />
-              {displayNutrition.label}
-            </CardTitle>
-            <CardDescription>{displayNutrition.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2 text-sm">
-              <Badge variant="secondary" className="font-normal">
-                {displayNutrition.data.calories.toFixed(0)} cal
-              </Badge>
-              <Badge variant="outline" className="font-normal">
-                P: {displayNutrition.data.protein.toFixed(1)}g
-              </Badge>
-              <Badge variant="outline" className="font-normal">
-                C: {displayNutrition.data.carbs.toFixed(1)}g
-              </Badge>
-              <Badge variant="outline" className="font-normal">
-                F: {displayNutrition.data.fats.toFixed(1)}g
-              </Badge>
-              <Badge variant="outline" className="font-normal">
-                V: {displayNutrition.data.fiber.toFixed(1)}g
-              </Badge>
-              <Badge variant="outline" className="font-normal">
-                S: {displayNutrition.data.sugar.toFixed(1)}g
-              </Badge>
-              <Badge variant="outline" className="font-normal">
-                Na: {displayNutrition.data.sodium.toFixed(0)}mg
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      )} */}
-
       <Tabs defaultValue="daily-log" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="daily-log">{t('nutritionCalculator.dailyLog')}</TabsTrigger>
@@ -384,9 +346,10 @@ export default function NutritionCalculator() {
           <SavedMealsList
             savedMeals={savedMeals}
             onDeleteMeal={handleDeleteSavedMeal}
+            allAvailableFoods={allAvailableFoods}
           />
           <div className="mt-6 flex justify-end">
-            <CreateSavedMealDialog onSave={handleSaveNewMeal}>
+            <CreateSavedMealDialog onSave={handleSaveNewMeal} allAvailableFoods={allAvailableFoods}>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
                 {t('nutritionCalculator.createSavedMeal')}

@@ -1,16 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Trash2, Flame, Beef, Wheat, Salad, Candy, Droplet, Utensils, Search } from 'lucide-react';
+import { Trash2, Flame, Utensils } from 'lucide-react';
 import { DailyGoals, FoodItem, MealEntry, NutritionTotals, SavedMeal } from '@/types/nutrition';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 interface DailyLogTabProps {
   dailyEntries: MealEntry[];
@@ -26,12 +23,9 @@ export default function DailyLogTab({
   onRemoveEntry,
   dailyGoals,
   allAvailableFoods,
-  onAddFoodToDailyLog,
   savedMeals,
 }: DailyLogTabProps) {
-  const { t } = useTranslation();
-  // Removed states for selectedFoodId, servings, mealType, searchQuery, selectedSavedMealId
-  // as the "Add Food / Meal to Log" card is being removed.
+  const { t } = useTranslation(); // Get t for translations
 
   const dailyTotals: NutritionTotals = useMemo(() => {
     return dailyEntries.reduce(
@@ -47,8 +41,6 @@ export default function DailyLogTab({
       { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, sugar: 0, sodium: 0 }
     );
   }, [dailyEntries]);
-
-  // Removed handleAddFood and handleAddSavedMeal functions
 
   const getProgress = (current: number, goal: number) => {
     if (goal === 0) return 0;
@@ -156,8 +148,6 @@ export default function DailyLogTab({
         </CardContent>
       </Card>
 
-      {/* Removed "Add Food / Meal to Log" card */}
-
       {/* Daily Log Entries */}
       <Card className="lg:col-span-2">
         <CardHeader>
@@ -177,40 +167,46 @@ export default function DailyLogTab({
               <div className="space-y-3">
                 {dailyEntries
                   .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()) // Sort by newest first
-                  .map((entry) => (
-                    <Card key={entry.id} className="p-3 hover:bg-accent/5 transition-colors">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm mb-1">{entry.foodItem.name}</h4>
-                          <p className="text-xs text-muted-foreground mb-1">
-                            {entry.servings} {t('nutritionCalculator.servings')} - {t(`nutritionCalculator.${entry.mealType}`)}
-                          </p>
-                          <div className="flex flex-wrap gap-2 text-xs">
-                            <Badge variant="secondary" className="font-normal">
-                              {(entry.foodItem.calories * entry.servings).toFixed(0)} cal
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              P: {(entry.foodItem.protein * entry.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              C: {(entry.foodItem.carbs * entry.servings).toFixed(1)}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              F: {(entry.foodItem.fats * entry.servings).toFixed(1)}g
-                            </Badge>
+                  .map((entry) => {
+                    // Find the localized food item from allAvailableFoods
+                    const localizedFood = allAvailableFoods.find(f => f.id === entry.foodItem.id);
+                    const displayName = localizedFood ? localizedFood.name : entry.foodItem.name;
+
+                    return (
+                      <Card key={entry.id} className="p-3 hover:bg-accent/5 transition-colors">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm mb-1">{displayName}</h4> {/* Use displayName */}
+                            <p className="text-xs text-muted-foreground mb-1">
+                              {entry.servings} {t('nutritionCalculator.servings')} - {t(`nutritionCalculator.${entry.mealType}`)}
+                            </p>
+                            <div className="flex flex-wrap gap-2 text-xs">
+                              <Badge variant="secondary" className="font-normal">
+                                {(entry.foodItem.calories * entry.servings).toFixed(0)} cal
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                P: {(entry.foodItem.protein * entry.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                C: {(entry.foodItem.carbs * entry.servings).toFixed(1)}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                F: {(entry.foodItem.fats * entry.servings).toFixed(1)}g
+                              </Badge>
+                            </div>
                           </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => onRemoveEntry(entry.id)}
+                            className="shrink-0 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => onRemoveEntry(entry.id)}
-                          className="shrink-0 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
+                      </Card>
+                    );
+                  })}
               </div>
             </ScrollArea>
           )}
