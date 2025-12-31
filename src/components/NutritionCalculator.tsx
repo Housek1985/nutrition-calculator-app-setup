@@ -206,6 +206,17 @@ export default function NutritionCalculator() {
     toast.info(t('toast.foodRemovedFromLog'));
   };
 
+  // New function to reset all data
+  const handleResetAllData = () => {
+    localStorage.removeItem('nutrition-saved-meals');
+    localStorage.removeItem('nutrition-daily-entries');
+    localStorage.removeItem('nutrition-custom-foods');
+    localStorage.removeItem('nutrition-daily-goals');
+    localStorage.removeItem('is-guest'); // Also reset guest status
+    toast.success(t('toast.allDataReset'));
+    window.location.reload(); // Reload the page to reflect changes
+  };
+
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <div className="mb-8 text-center">
@@ -217,7 +228,11 @@ export default function NutritionCalculator() {
         <p className="text-sm text-primary/80 font-medium">{t('nutritionCalculator.welcomeMessage')}</p>
         <div className="mt-4 flex justify-center items-center gap-2">
           {/* Settings Dialog Trigger */}
-          <SettingsDialog dailyGoals={dailyGoals} setDailyGoals={setDailyGoals}>
+          <SettingsDialog 
+            dailyGoals={dailyGoals} 
+            setDailyGoals={setDailyGoals}
+            onResetAllData={handleResetAllData} // Pass the new function
+          >
             <Button variant="outline" size="icon">
               <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
               <span className="sr-only">{t('settings.title')}</span>

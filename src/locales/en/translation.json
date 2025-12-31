@@ -75,7 +75,8 @@
     "invalidServings": "Servings must be a positive number.",
     "noImageSelected": "Please select an image first.",
     "foodRecognitionFailed": "Failed to recognize food. Please try again.",
-    "foodRecognitionSuccess": "{{count}} food items recognized!"
+    "foodRecognitionSuccess": "{{count}} food items recognized!",
+    "allDataReset": "All application data has been reset."
   },
   "settings": {
     "title": "Settings",
@@ -84,7 +85,13 @@
     "theme": "Theme",
     "lightTheme": "Light",
     "darkTheme": "Dark",
-    "close": "Close"
+    "close": "Close",
+    "dataManagement": "Data Management",
+    "dataManagementDescription": "Manage your application's stored data.",
+    "resetAllData": "Reset All Data",
+    "confirmResetTitle": "Are you absolutely sure?",
+    "confirmResetDescription": "This action cannot be undone. This will permanently delete all your daily logs, saved meals, custom foods, and daily goals.",
+    "resetConfirm": "Yes, reset all data"
   },
   "login": {
     "welcome": "Welcome to Nutrition Calculator!",

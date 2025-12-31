@@ -7,10 +7,21 @@ import {
   DialogFooter,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Sun, Moon, Settings as SettingsIcon } from 'lucide-react';
+import { Sun, Moon, Settings as SettingsIcon, Eraser } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from 'next-themes';
@@ -20,13 +31,14 @@ import { Separator } from '@/components/ui/separator';
 interface SettingsDialogProps {
   dailyGoals: DailyGoals;
   setDailyGoals: (goals: DailyGoals) => void;
+  onResetAllData: () => void; // New prop for resetting all data
   children: React.ReactNode;
 }
 
-export default function SettingsDialog({ dailyGoals, setDailyGoals, children }: SettingsDialogProps) {
+export default function SettingsDialog({ dailyGoals, setDailyGoals, onResetAllData, children }: SettingsDialogProps) {
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage(); // Keep for potential future use if needed elsewhere
-  const { theme, setTheme } = useTheme(); // Keep for potential future use if needed elsewhere
+  const { language, changeLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
 
   return (
     <Dialog>
@@ -40,7 +52,6 @@ export default function SettingsDialog({ dailyGoals, setDailyGoals, children }: 
           <DialogDescription>{t('settings.description')}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {/* Language Settings - REMOVED FROM HERE, NOW ON MAIN PAGE */}
           {/* Theme Settings */}
           <div className="space-y-2">
             <Label>{t('settings.theme')}</Label>
@@ -131,6 +142,36 @@ export default function SettingsDialog({ dailyGoals, setDailyGoals, children }: 
                 />
               </div>
             </div>
+          </div>
+
+          <Separator />
+
+          {/* Data Management */}
+          <div className="space-y-2">
+            <h3 className="font-semibold text-base">{t('settings.dataManagement')}</h3>
+            <p className="text-sm text-muted-foreground">{t('settings.dataManagementDescription')}</p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                  <Eraser className="h-4 w-4 mr-2" />
+                  {t('settings.resetAllData')}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t('settings.confirmResetTitle')}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t('settings.confirmResetDescription')}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t('settings.cancel')}</AlertDialogCancel>
+                  <AlertDialogAction onClick={onResetAllData} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    {t('settings.resetConfirm')}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
         <DialogFooter>

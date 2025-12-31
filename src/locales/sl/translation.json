@@ -75,7 +75,8 @@
     "invalidServings": "Porcije morajo biti pozitivno število.",
     "noImageSelected": "Najprej izberite sliko.",
     "foodRecognitionFailed": "Prepoznavanje hrane ni uspelo. Poskusite znova.",
-    "foodRecognitionSuccess": "Prepoznanih je bilo {{count}} živil!"
+    "foodRecognitionSuccess": "Prepoznanih je bilo {{count}} živil!",
+    "allDataReset": "Vsi podatki aplikacije so bili ponastavljeni."
   },
   "settings": {
     "title": "Nastavitve",
@@ -84,7 +85,13 @@
     "theme": "Tema",
     "lightTheme": "Svetla",
     "darkTheme": "Temna",
-    "close": "Zapri"
+    "close": "Zapri",
+    "dataManagement": "Upravljanje podatkov",
+    "dataManagementDescription": "Upravljajte shranjene podatke vaše aplikacije.",
+    "resetAllData": "Ponastavi vse podatke",
+    "confirmResetTitle": "Ste popolnoma prepričani?",
+    "confirmResetDescription": "Tega dejanja ni mogoče razveljaviti. Trajno bo izbrisalo vse vaše dnevne vnose, shranjene obroke, lastna živila in dnevne cilje.",
+    "resetConfirm": "Da, ponastavi vse podatke"
   },
   "login": {
     "welcome": "Dobrodošli v prehranski kalkulator!",
