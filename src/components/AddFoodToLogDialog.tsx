@@ -11,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus } from 'lucide-react';
 import { FoodItem, MealEntry } from '@/types/nutrition';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +26,8 @@ export default function AddFoodToLogDialog({ foodItem, onAddFood, children }: Ad
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [servings, setServings] = useState<number>(1);
-  const [mealType, setMealType] = useState<MealEntry['mealType']>('snack');
+  // Meal type is now fixed to 'snack'
+  const mealType: MealEntry['mealType'] = 'snack';
 
   const handleAddFood = () => {
     if (servings <= 0) {
@@ -37,7 +37,6 @@ export default function AddFoodToLogDialog({ foodItem, onAddFood, children }: Ad
     onAddFood(foodItem, servings, mealType);
     setOpen(false);
     setServings(1); // Reset servings for next use
-    setMealType('snack'); // Reset meal type for next use
   };
 
   return (
@@ -65,22 +64,7 @@ export default function AddFoodToLogDialog({ foodItem, onAddFood, children }: Ad
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="mealType" className="text-right">
-              {t('nutritionCalculator.mealType')}
-            </Label>
-            <Select onValueChange={(value: MealEntry['mealType']) => setMealType(value)} value={mealType}>
-              <SelectTrigger id="mealType" className="col-span-3">
-                <SelectValue placeholder={t('nutritionCalculator.selectMealType')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="breakfast">{t('nutritionCalculator.breakfast')}</SelectItem>
-                <SelectItem value="lunch">{t('nutritionCalculator.lunch')}</SelectItem>
-                <SelectItem value="dinner">{t('nutritionCalculator.dinner')}</SelectItem>
-                <SelectItem value="snack">{t('nutritionCalculator.snack')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Meal type selection removed */}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>

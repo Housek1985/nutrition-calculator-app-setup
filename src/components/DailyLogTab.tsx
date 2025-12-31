@@ -30,17 +30,8 @@ export default function DailyLogTab({
   savedMeals,
 }: DailyLogTabProps) {
   const { t } = useTranslation();
-  const [selectedFoodId, setSelectedFoodId] = useState<string | undefined>(undefined);
-  const [servings, setServings] = useState<number>(1);
-  const [mealType, setMealType] = useState<MealEntry['mealType']>('breakfast');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSavedMealId, setSelectedSavedMealId] = useState<string | undefined>(undefined);
-
-  const filteredFoods = useMemo(() => {
-    return allAvailableFoods.filter(food =>
-      food.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery, allAvailableFoods]);
+  // Removed states for selectedFoodId, servings, mealType, searchQuery, selectedSavedMealId
+  // as the "Add Food / Meal to Log" card is being removed.
 
   const dailyTotals: NutritionTotals = useMemo(() => {
     return dailyEntries.reduce(
@@ -57,34 +48,7 @@ export default function DailyLogTab({
     );
   }, [dailyEntries]);
 
-  const handleAddFood = () => {
-    if (selectedFoodId && servings > 0) {
-      const food = allAvailableFoods.find(f => f.id === selectedFoodId);
-      if (food) {
-        onAddFoodToDailyLog(food, servings, mealType);
-        setSelectedFoodId(undefined);
-        setServings(1);
-        setSearchQuery('');
-      }
-    } else {
-      toast.error(t('toast.selectFoodAndServings'));
-    }
-  };
-
-  const handleAddSavedMeal = () => {
-    if (selectedSavedMealId) {
-      const meal = savedMeals.find(m => m.id === selectedSavedMealId);
-      if (meal) {
-        meal.items.forEach(item => {
-          onAddFoodToDailyLog(item.foodItem, item.servings, mealType);
-        });
-        setSelectedSavedMealId(undefined);
-        toast.success(t('toast.savedMealAddedToLog', { mealName: meal.name }));
-      }
-    } else {
-      toast.error(t('toast.selectSavedMeal'));
-    }
-  };
+  // Removed handleAddFood and handleAddSavedMeal functions
 
   const getProgress = (current: number, goal: number) => {
     if (goal === 0) return 0;
@@ -192,97 +156,7 @@ export default function DailyLogTab({
         </CardContent>
       </Card>
 
-      {/* Add Food / Meal to Log */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            {t('nutritionCalculator.addFoodToLog')}
-          </CardTitle>
-          <CardDescription>{t('nutritionCalculator.addFoodToLogDescription')}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Meal Type Selector */}
-          <div className="space-y-2">
-            <Label htmlFor="mealType">{t('nutritionCalculator.mealType')}</Label>
-            <Select onValueChange={(value: MealEntry['mealType']) => setMealType(value)} value={mealType}>
-              <SelectTrigger id="mealType">
-                <SelectValue placeholder={t('nutritionCalculator.selectMealType')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="breakfast">{t('nutritionCalculator.breakfast')}</SelectItem>
-                <SelectItem value="lunch">{t('nutritionCalculator.lunch')}</SelectItem>
-                <SelectItem value="dinner">{t('nutritionCalculator.dinner')}</SelectItem>
-                <SelectItem value="snack">{t('nutritionCalculator.snack')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Add Single Food */}
-          <div className="space-y-2 border-t pt-4">
-            <h4 className="font-semibold text-sm">{t('nutritionCalculator.addSingleFood')}</h4>
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t('nutritionCalculator.searchFoods')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-            <Select onValueChange={setSelectedFoodId} value={selectedFoodId}>
-              <SelectTrigger>
-                <SelectValue placeholder={t('nutritionCalculator.selectFood')} />
-              </SelectTrigger>
-              <SelectContent>
-                <ScrollArea className="h-[150px]">
-                  {filteredFoods.map((food) => (
-                    <SelectItem key={food.id} value={food.id}>
-                      {food.name} ({food.calories} cal)
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
-            <div className="flex gap-2">
-              <Input
-                type="number"
-                placeholder={t('nutritionCalculator.servings')}
-                value={servings}
-                onChange={(e) => setServings(parseFloat(e.target.value))}
-                min="0.1"
-                step="0.1"
-                className="w-24"
-              />
-              <Button onClick={handleAddFood} disabled={!selectedFoodId || servings <= 0} className="flex-1">
-                <Plus className="h-4 w-4 mr-2" /> {t('nutritionCalculator.addFood')}
-              </Button>
-            </div>
-          </div>
-
-          {/* Add Saved Meal */}
-          <div className="space-y-2 border-t pt-4">
-            <h4 className="font-semibold text-sm">{t('nutritionCalculator.addSavedMeal')}</h4>
-            <Select onValueChange={setSelectedSavedMealId} value={selectedSavedMealId}>
-              <SelectTrigger>
-                <SelectValue placeholder={t('nutritionCalculator.selectSavedMeal')} />
-              </SelectTrigger>
-              <SelectContent>
-                <ScrollArea className="h-[150px]">
-                  {savedMeals.map((meal) => (
-                    <SelectItem key={meal.id} value={meal.id}>
-                      {meal.name}
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
-            <Button onClick={handleAddSavedMeal} disabled={!selectedSavedMealId} className="w-full">
-              <Plus className="h-4 w-4 mr-2" /> {t('nutritionCalculator.addMeal')}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Removed "Add Food / Meal to Log" card */}
 
       {/* Daily Log Entries */}
       <Card className="lg:col-span-2">
