@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,12 +7,17 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Droplet } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem } from '@/types/nutrition';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useLanguage } from '@/contexts/LanguageContext'; // Import useLanguage
 
 export default function NutritionCalculator() {
+  const { t } = useTranslation(); // Initialize useTranslation
+  const { language, changeLanguage } = useLanguage(); // Use the language context
+
   const [meals, setMeals] = useState<MealEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
@@ -51,12 +55,12 @@ export default function NutritionCalculator() {
       timestamp: new Date(),
     };
     setMeals([...meals, newMeal]);
-    toast.success(`Added ${foodItem.name} to ${selectedMealType}`);
+    toast.success(t('toast.foodAdded', { foodName: foodItem.name, mealType: t(`nutritionCalculator.${selectedMealType}`) }));
   };
 
   const removeMeal = (id: string) => {
     setMeals(meals.filter(meal => meal.id !== id));
-    toast.info('Meal removed');
+    toast.info(t('toast.mealRemoved'));
   };
 
   const updateServings = (id: string, servings: number) => {
@@ -77,9 +81,13 @@ export default function NutritionCalculator() {
     <div className="container mx-auto p-4 max-w-7xl">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Nutrition Calculator
+          {t('nutritionCalculator.title')}
         </h1>
-        <p className="text-muted-foreground">Track your daily nutrition and reach your goals</p>
+        <p className="text-muted-foreground">{t('nutritionCalculator.description')}</p>
+        <div className="mt-4">
+          <Button onClick={() => changeLanguage('en')} variant={language === 'en' ? 'default' : 'outline'} className="mr-2">EN</Button>
+          <Button onClick={() => changeLanguage('sl')} variant={language === 'sl' ? 'default' : 'outline'}>SL</Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
@@ -89,7 +97,7 @@ export default function NutritionCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Flame className="h-5 w-5 text-primary" />
-                Calories
+                {t('nutritionCalculator.calories')}
               </CardTitle>
               <Badge variant="outline">{totals.calories.toFixed(0)} / {dailyGoals.calories}</Badge>
             </div>
@@ -105,7 +113,7 @@ export default function NutritionCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Beef className="h-5 w-5 text-accent" />
-                Protein
+                {t('nutritionCalculator.protein')}
               </CardTitle>
               <Badge variant="outline">{totals.protein.toFixed(1)}g / {dailyGoals.protein}g</Badge>
             </div>
@@ -121,7 +129,7 @@ export default function NutritionCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Wheat className="h-5 w-5 text-warning" />
-                Carbs
+                {t('nutritionCalculator.carbs')}
               </CardTitle>
               <Badge variant="outline">{totals.carbs.toFixed(1)}g / {dailyGoals.carbs}g</Badge>
             </div>
@@ -138,9 +146,9 @@ export default function NutritionCalculator() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Apple className="h-5 w-5" />
-              Food Database
+              {t('nutritionCalculator.foodDatabase')}
             </CardTitle>
-            <CardDescription>Search and add foods to your meals</CardDescription>
+            <CardDescription>{t('nutritionCalculator.foodDatabaseDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -148,7 +156,7 @@ export default function NutritionCalculator() {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search foods..."
+                    placeholder={t('nutritionCalculator.searchFoods')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-9"
@@ -158,10 +166,10 @@ export default function NutritionCalculator() {
 
               <Tabs value={selectedMealType} onValueChange={(v) => setSelectedMealType(v as any)}>
                 <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
-                  <TabsTrigger value="lunch">Lunch</TabsTrigger>
-                  <TabsTrigger value="dinner">Dinner</TabsTrigger>
-                  <TabsTrigger value="snack">Snack</TabsTrigger>
+                  <TabsTrigger value="breakfast">{t('nutritionCalculator.breakfast')}</TabsTrigger>
+                  <TabsTrigger value="lunch">{t('nutritionCalculator.lunch')}</TabsTrigger>
+                  <TabsTrigger value="dinner">{t('nutritionCalculator.dinner')}</TabsTrigger>
+                  <TabsTrigger value="snack">{t('nutritionCalculator.snack')}</TabsTrigger>
                 </TabsList>
               </Tabs>
 
@@ -207,24 +215,24 @@ export default function NutritionCalculator() {
         {/* Daily Log */}
         <Card>
           <CardHeader>
-            <CardTitle>Today's Meals</CardTitle>
-            <CardDescription>Your nutrition log for today</CardDescription>
+            <CardTitle>{t('nutritionCalculator.todaysMeals')}</CardTitle>
+            <CardDescription>{t('nutritionCalculator.todaysMealsDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" className="w-full">
               <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
-                <TabsTrigger value="lunch">Lunch</TabsTrigger>
-                <TabsTrigger value="dinner">Dinner</TabsTrigger>
-                <TabsTrigger value="snack">Snack</TabsTrigger>
+                <TabsTrigger value="all">{t('nutritionCalculator.all')}</TabsTrigger>
+                <TabsTrigger value="breakfast">{t('nutritionCalculator.breakfast')}</TabsTrigger>
+                <TabsTrigger value="lunch">{t('nutritionCalculator.lunch')}</TabsTrigger>
+                <TabsTrigger value="dinner">{t('nutritionCalculator.dinner')}</TabsTrigger>
+                <TabsTrigger value="snack">{t('nutritionCalculator.snack')}</TabsTrigger>
               </TabsList>
 
               <ScrollArea className="h-[400px] mt-4">
                 <TabsContent value="all" className="space-y-2 mt-0">
                   {meals.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
-                      No meals added yet. Start by adding foods from the database.
+                      {t('nutritionCalculator.noMealsAdded')}
                     </div>
                   ) : (
                     meals.map((meal) => (
@@ -234,7 +242,7 @@ export default function NutritionCalculator() {
                             <div className="flex items-center gap-2 mb-1">
                               <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
                               <Badge variant="secondary" className="text-xs">
-                                {meal.mealType}
+                                {t(`nutritionCalculator.${meal.mealType}`)}
                               </Badge>
                             </div>
                             <div className="flex items-center gap-2 mb-2">
@@ -281,7 +289,7 @@ export default function NutritionCalculator() {
                   <TabsContent key={type} value={type} className="space-y-2 mt-0">
                     {getMealsByType(type).length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
-                        No {type} meals added yet.
+                        {t('nutritionCalculator.noMealsOfTypeAdded', { type: t(`nutritionCalculator.${type}`) })}
                       </div>
                     ) : (
                       getMealsByType(type).map((meal) => (
@@ -338,13 +346,13 @@ export default function NutritionCalculator() {
       {/* Daily Goals Settings */}
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Daily Goals</CardTitle>
-          <CardDescription>Set your daily nutrition targets</CardDescription>
+          <CardTitle>{t('nutritionCalculator.dailyGoals')}</CardTitle>
+          <CardDescription>{t('nutritionCalculator.dailyGoalsDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
-              <Label htmlFor="goal-calories">Calories</Label>
+              <Label htmlFor="goal-calories">{t('nutritionCalculator.calories')}</Label>
               <Input
                 id="goal-calories"
                 type="number"
@@ -353,7 +361,7 @@ export default function NutritionCalculator() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="goal-protein">Protein (g)</Label>
+              <Label htmlFor="goal-protein">{t('nutritionCalculator.protein')} (g)</Label>
               <Input
                 id="goal-protein"
                 type="number"
@@ -362,7 +370,7 @@ export default function NutritionCalculator() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="goal-carbs">Carbs (g)</Label>
+              <Label htmlFor="goal-carbs">{t('nutritionCalculator.carbs')} (g)</Label>
               <Input
                 id="goal-carbs"
                 type="number"
@@ -371,7 +379,7 @@ export default function NutritionCalculator() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="goal-fats">Fats (g)</Label>
+              <Label htmlFor="goal-fats">{t('nutritionCalculator.fats')} (g)</Label>
               <Input
                 id="goal-fats"
                 type="number"

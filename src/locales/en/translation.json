@@ -1,0 +1,30 @@
+{
+  "nutritionCalculator": {
+    "title": "Nutrition Calculator",
+    "description": "Track your daily nutrition and reach your goals",
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fats": "Fats",
+    "foodDatabase": "Food Database",
+    "foodDatabaseDescription": "Search and add foods to your meals",
+    "searchFoods": "Search foods...",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack",
+    "add": "Add",
+    "todaysMeals": "Today's Meals",
+    "todaysMealsDescription": "Your nutrition log for today",
+    "all": "All",
+    "noMealsAdded": "No meals added yet. Start by adding foods from the database.",
+    "noMealsOfTypeAdded": "No {{type}} meals added yet.",
+    "dailyGoals": "Daily Goals",
+    "dailyGoalsDescription": "Set your daily nutrition targets",
+    "servings": "servings"
+  },
+  "toast": {
+    "foodAdded": "Added {{foodName}} to {{mealType}}",
+    "mealRemoved": "Meal removed"
+  }
+}

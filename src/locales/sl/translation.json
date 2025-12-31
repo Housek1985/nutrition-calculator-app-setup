@@ -1,0 +1,30 @@
+{
+  "nutritionCalculator": {
+    "title": "Kalkulator Prehrane",
+    "description": "Spremljajte dnevni vnos hranil in dosežite svoje cilje",
+    "calories": "Kalorije",
+    "protein": "Beljakovine",
+    "carbs": "Ogljikovi hidrati",
+    "fats": "Maščobe",
+    "foodDatabase": "Baza živil",
+    "foodDatabaseDescription": "Poiščite in dodajte živila k svojim obrokom",
+    "searchFoods": "Išči živila...",
+    "breakfast": "Zajtrk",
+    "lunch": "Kosilo",
+    "dinner": "Večerja",
+    "snack": "Malica",
+    "add": "Dodaj",
+    "todaysMeals": "Današnji obroki",
+    "todaysMealsDescription": "Vaš dnevnik prehrane za danes",
+    "all": "Vsi",
+    "noMealsAdded": "Noben obrok še ni dodan. Začnite z dodajanjem živil iz baze.",
+    "noMealsOfTypeAdded": "Nobenih {{type}} obrokov še ni dodanih.",
+    "dailyGoals": "Dnevni cilji",
+    "dailyGoalsDescription": "Nastavite svoje dnevne prehranske cilje",
+    "servings": "porcije"
+  },
+  "toast": {
+    "foodAdded": "Dodano {{foodName}} k {{mealType}}",
+    "mealRemoved": "Obrok odstranjen"
+  }
+}
