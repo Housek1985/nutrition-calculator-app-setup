@@ -87,7 +87,7 @@
     "close": "Close"
   },
   "login": {
-    "welcome": "Welcome to Buildify Nutrition!",
+    "welcome": "Welcome to Nutrition Calculator!",
     "continueAsGuest": "Continue as Guest"
   }
 }
