@@ -68,7 +68,8 @@
     "foodRemovedFromLog": "Food item removed from daily log.",
     "selectFoodAndServings": "Please select a food and enter servings.",
     "selectSavedMeal": "Please select a saved meal.",
-    "savedMealAddedToLog": "Saved meal '{{mealName}}' added to daily log!"
+    "savedMealAddedToLog": "Saved meal '{{mealName}}' added to daily log!",
+    "foodNotFound": "Food '{{foodName}}' not found in database."
   },
   "settings": {
     "title": "Settings",

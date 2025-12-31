@@ -1,14 +1,15 @@
 export interface FoodItem {
   id: string;
   name: string;
+  name_sl?: string; // Dodana opcijska lastnost za slovensko ime
   serving: string;
   calories: number;
   protein: number;
   carbs: number;
   fats: number;
-  fiber: number; // Made mandatory
-  sugar: number; // New
-  sodium: number; // New (in mg)
+  fiber: number;
+  sugar: number;
+  sodium: number;
 }
 
 export interface MealEntry {
@@ -24,9 +25,9 @@ export interface DailyGoals {
   protein: number;
   carbs: number;
   fats: number;
-  fiber: number; // New
-  sugar: number; // New
-  sodium: number; // New
+  fiber: number;
+  sugar: number;
+  sodium: number;
 }
 
 export interface NutritionTotals {
@@ -34,9 +35,9 @@ export interface NutritionTotals {
   protein: number;
   carbs: number;
   fats: number;
-  fiber: number; // New
-  sugar: number; // New
-  sodium: number; // New
+  fiber: number;
+  sugar: number;
+  sodium: number;
 }
 
 // New interface for a food item within a saved meal

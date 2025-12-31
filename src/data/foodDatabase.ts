@@ -5,6 +5,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '1',
     name: 'Chicken Breast',
+    name_sl: 'Piščančja prsa',
     serving: '100g',
     calories: 165,
     protein: 31,
@@ -17,6 +18,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '2',
     name: 'Salmon',
+    name_sl: 'Losos',
     serving: '100g',
     calories: 208,
     protein: 20,
@@ -29,6 +31,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '3',
     name: 'Eggs',
+    name_sl: 'Jajca',
     serving: '2 large',
     calories: 143,
     protein: 13,
@@ -41,6 +44,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '4',
     name: 'Greek Yogurt',
+    name_sl: 'Grški jogurt',
     serving: '1 cup',
     calories: 100,
     protein: 17,
@@ -54,6 +58,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '5',
     name: 'Brown Rice',
+    name_sl: 'Rjavi riž',
     serving: '1 cup cooked',
     calories: 216,
     protein: 5,
@@ -66,6 +71,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '6',
     name: 'Oatmeal',
+    name_sl: 'Ovseni kosmiči',
     serving: '1 cup cooked',
     calories: 166,
     protein: 6,
@@ -78,6 +84,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '7',
     name: 'Sweet Potato',
+    name_sl: 'Sladki krompir',
     serving: '1 medium',
     calories: 103,
     protein: 2.3,
@@ -90,6 +97,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '8',
     name: 'Whole Wheat Bread',
+    name_sl: 'Polnozrnati kruh',
     serving: '2 slices',
     calories: 160,
     protein: 8,
@@ -103,6 +111,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '9',
     name: 'Broccoli',
+    name_sl: 'Brokoli',
     serving: '1 cup',
     calories: 31,
     protein: 2.6,
@@ -115,6 +124,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '10',
     name: 'Spinach',
+    name_sl: 'Špinača',
     serving: '1 cup',
     calories: 7,
     protein: 0.9,
@@ -127,6 +137,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '11',
     name: 'Avocado',
+    name_sl: 'Avokado',
     serving: '1 medium',
     calories: 234,
     protein: 2.9,
@@ -140,6 +151,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '12',
     name: 'Banana',
+    name_sl: 'Banana',
     serving: '1 medium',
     calories: 105,
     protein: 1.3,
@@ -152,6 +164,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '13',
     name: 'Apple',
+    name_sl: 'Jabolko',
     serving: '1 medium',
     calories: 95,
     protein: 0.5,
@@ -164,6 +177,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '14',
     name: 'Blueberries',
+    name_sl: 'Borovnice',
     serving: '1 cup',
     calories: 84,
     protein: 1.1,
@@ -177,6 +191,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '15',
     name: 'Almonds',
+    name_sl: 'Mandlji',
     serving: '1 oz (28g)',
     calories: 164,
     protein: 6,
@@ -189,6 +204,7 @@ export const foodDatabase: FoodItem[] = [
   {
     id: '16',
     name: 'Peanut Butter',
+    name_sl: 'Arašidovo maslo',
     serving: '2 tbsp',
     calories: 188,
     protein: 8,

@@ -68,7 +68,8 @@
     "foodRemovedFromLog": "Živilo odstranjeno iz dnevnega vnosa.",
     "selectFoodAndServings": "Prosimo, izberite živilo in vnesite porcije.",
     "selectSavedMeal": "Prosimo, izberite shranjen obrok.",
-    "savedMealAddedToLog": "Shranjeni obrok '{{mealName}}' dodan v dnevni vnos!"
+    "savedMealAddedToLog": "Shranjeni obrok '{{mealName}}' dodan v dnevni vnos!",
+    "foodNotFound": "Živilo '{{foodName}}' ni najdeno v bazi."
   },
   "settings": {
     "title": "Nastavitve",

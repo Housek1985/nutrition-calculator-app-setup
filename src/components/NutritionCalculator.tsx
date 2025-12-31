@@ -75,7 +75,7 @@ function calculateNutritionPer100g(food: FoodItem): DisplayNutrition | null {
 }
 
 export default function NutritionCalculator() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { language, changeLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
 
@@ -97,8 +97,11 @@ export default function NutritionCalculator() {
   const [recognizedFood, setRecognizedFood] = useState<FoodItem | null>(null);
 
   const allAvailableFoods = useMemo(() => {
-    return [...foodDatabase];
-  }, [foodDatabase]);
+    return foodDatabase.map(food => ({
+      ...food,
+      name: i18n.language === 'sl' && food.name_sl ? food.name_sl : food.name,
+    }));
+  }, [foodDatabase, i18n.language]);
 
   const filteredFoods = useMemo(() => {
     return allAvailableFoods.filter(food =>
@@ -106,18 +109,47 @@ export default function NutritionCalculator() {
     );
   }, [confirmedSearchQuery, allAvailableFoods]);
 
-  // Effect to update recognizedFood based on confirmed search query
+  // Function to add a food item to the daily log
+  const handleAddFoodToDailyLog = (foodItem: FoodItem, servings: number, mealType: MealEntry['mealType']) => {
+    const newEntry: MealEntry = {
+      id: Date.now().toString(),
+      foodItem,
+      servings,
+      mealType,
+      timestamp: new Date(),
+    };
+    setDailyEntries(prev => [...prev, newEntry]);
+    toast.success(t('toast.foodAddedToLog', { foodName: foodItem.name }));
+  };
+
+  // Effect to update recognizedFood based on confirmed search query and add to log
   useEffect(() => {
     if (confirmedSearchQuery.trim() === '') {
       setRecognizedFood(null);
       return;
     }
     // Find the first food that matches the confirmed search query
-    const foundFood = allAvailableFoods.find(food =>
-      food.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase())
+    const foundFood = foodDatabase.find(food => // Search original foodDatabase for consistent ID
+      food.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase()) ||
+      (food.name_sl && food.name_sl.toLowerCase().includes(confirmedSearchQuery.toLowerCase()))
     );
-    setRecognizedFood(foundFood || null);
-  }, [confirmedSearchQuery, allAvailableFoods]);
+
+    if (foundFood) {
+      // Use the localized name for display in toast
+      const localizedFoodName = i18n.language === 'sl' && foundFood.name_sl ? foundFood.name_sl : foundFood.name;
+      
+      // Automatically add to daily log with default 1 serving and 'snack' meal type
+      handleAddFoodToDailyLog(foundFood, 1, 'snack'); 
+      
+      // Clear search input and confirmed search query
+      setSearchQuery(''); 
+      setConfirmedSearchQuery(''); 
+      setRecognizedFood(null); // Clear recognized food to hide the card
+    } else {
+      setRecognizedFood(null);
+      toast.error(t('toast.foodNotFound', { foodName: confirmedSearchQuery })); // New toast message
+    }
+  }, [confirmedSearchQuery, foodDatabase, i18n.language, t]); // Added i18n.language and t to dependencies
 
   const displayNutrition = useMemo(() => {
     if (!recognizedFood) return null;
@@ -158,19 +190,6 @@ export default function NutritionCalculator() {
 
   const handleConfirmSearch = () => {
     setConfirmedSearchQuery(searchQuery);
-  };
-
-  // Function to add a food item to the daily log
-  const handleAddFoodToDailyLog = (foodItem: FoodItem, servings: number, mealType: MealEntry['mealType']) => {
-    const newEntry: MealEntry = {
-      id: Date.now().toString(),
-      foodItem,
-      servings,
-      mealType,
-      timestamp: new Date(),
-    };
-    setDailyEntries(prev => [...prev, newEntry]);
-    toast.success(t('toast.foodAddedToLog', { foodName: foodItem.name }));
   };
 
   // Function to remove a food item from the daily log
@@ -249,8 +268,8 @@ export default function NutritionCalculator() {
         </Button>
       </div>
 
-      {/* Recognized Food Nutrition Card */}
-      {recognizedFood && displayNutrition && (
+      {/* Recognized Food Nutrition Card - This will now disappear after adding to log */}
+      {/* {recognizedFood && displayNutrition && (
         <Card className="mx-auto max-w-md mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -285,7 +304,7 @@ export default function NutritionCalculator() {
             </div>
           </CardContent>
         </Card>
-      )}
+      )} */}
 
       <Tabs defaultValue="daily-log" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
