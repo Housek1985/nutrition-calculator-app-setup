@@ -2,10 +2,11 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'; // Popravljena sintaksa uvoza
 import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { useEffect } from 'react';
+import { Salad } from 'lucide-react'; // Import Salad icon
 
 export default function Login() {
   const { t } = useTranslation();
@@ -26,7 +27,8 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <div className="w-full max-w-md space-y-6">
-        <h1 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent flex items-center justify-center gap-2">
+          <Salad className="h-9 w-9 text-primary" /> {/* Added Salad icon here */}
           {t('login.welcome')}
         </h1>
         <div className="bg-card p-6 rounded-lg shadow-lg border border-border">
