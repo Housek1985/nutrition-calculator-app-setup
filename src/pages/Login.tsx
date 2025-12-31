@@ -5,31 +5,31 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Salad, Globe } from 'lucide-react';
+import { Salad, Globe, Sun, Moon } from 'lucide-react'; // Dodani Sun in Moon ikoni
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSession } from '@/contexts/SessionContext';
+import { useTheme } from 'next-themes'; // Uvozi useTheme
 
 export default function Login() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { isGuest: sessionIsGuest, setIsGuest: setSessionIsGuest, session } = useSession(); // Also get 'session' to check if already authenticated
+  const { isGuest: sessionIsGuest, setIsGuest: setSessionIsGuest, session } = useSession();
   const { language, changeLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme(); // Uporabi useTheme hook
 
   useEffect(() => {
-    // If already authenticated or is guest, redirect to home
     if (session || sessionIsGuest) {
       navigate('/');
     }
-    // Ensure language is set to 'sl' on initial load if not already 'sl' or 'en'
     if (i18n.language !== 'sl' && i18n.language !== 'en') {
       changeLanguage('sl');
     }
-  }, [session, sessionIsGuest, navigate, i18n, changeLanguage]); // Added 'session' to dependencies
+  }, [session, sessionIsGuest, navigate, i18n, changeLanguage]);
 
   const handleGuestLogin = () => {
-    setSessionIsGuest(true); // Update guest status in SessionContext and localStorage
-    // No explicit navigate here, AuthWrapper will handle the redirect based on updated isGuest state
+    setSessionIsGuest(true);
+    // AuthWrapper bo obravnaval preusmeritev na podlagi posodobljenega stanja isGuest
   };
 
   return (
@@ -71,7 +71,20 @@ export default function Login() {
             {t('login.continueAsGuest')}
           </Button>
           <div className="flex items-center justify-center gap-2">
-            <Globe className="h-5 w-5 text-muted-foreground" />
+            {/* Theme Toggle Button */}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? (
+                <Sun className="h-[1.2rem] w-[1.2rem]" />
+              ) : (
+                <Moon className="h-[1.2rem] w-[1.2rem]" />
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+            {/* Language Selector */}
             <Select onValueChange={(value) => changeLanguage(value as 'en' | 'sl')} value={language}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={t('settings.language')} />
