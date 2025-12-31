@@ -56,7 +56,11 @@
     "noFoodsRecognized": "No foods recognized. Try another image!",
     "nutritionTrends": "Nutrition Trends",
     "nutritionTrendsDescription": "Visualize your daily nutrition intake over time.",
-    "noDataForCharts": "No daily log data available to display charts yet."
+    "noDataForCharts": "No daily log data available to display charts yet.",
+    "createCustomFood": "Create Custom Food",
+    "createCustomFoodDescription": "Define your own food item with custom nutritional values.",
+    "foodNamePlaceholder": "e.g., My Homemade Protein Shake",
+    "servingSizePlaceholder": "e.g., 1 shake, 200ml, 1 cup"
   },
   "toast": {
     "mealNameRequired": "Meal name is required.",

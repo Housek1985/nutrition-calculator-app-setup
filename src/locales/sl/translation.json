@@ -56,7 +56,11 @@
     "noFoodsRecognized": "Živila niso prepoznana. Poskusite z drugo sliko!",
     "nutritionTrends": "Prehranski trendi",
     "nutritionTrendsDescription": "Vizualizirajte svoj dnevni vnos hranil skozi čas.",
-    "noDataForCharts": "Za prikaz grafikonov še ni podatkov o dnevnem vnosu."
+    "noDataForCharts": "Za prikaz grafikonov še ni podatkov o dnevnem vnosu.",
+    "createCustomFood": "Ustvari lastno živilo",
+    "createCustomFoodDescription": "Določite svoje živilo z lastnimi hranilnimi vrednostmi.",
+    "foodNamePlaceholder": "npr. Moj domači proteinski napitek",
+    "servingSizePlaceholder": "npr. 1 napitek, 200ml, 1 skodelica"
   },
   "toast": {
     "mealNameRequired": "Ime obroka je obvezno.",

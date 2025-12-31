@@ -21,7 +21,8 @@ import SettingsDialog from './SettingsDialog';
 import DailyLogTab from './DailyLogTab';
 import AddFoodToLogDialog from './AddFoodToLogDialog';
 import ImageFoodRecognizer from './ImageFoodRecognizer';
-import NutritionTrendsChart from './NutritionTrendsChart'; // Import the new chart component
+import NutritionTrendsChart from './NutritionTrendsChart';
+import CreateCustomFoodDialog from './CreateCustomFoodDialog'; // New import
 
 interface DisplayNutrition {
   calories: number;
@@ -84,6 +85,7 @@ export default function NutritionCalculator() {
 
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
   const [dailyEntries, setDailyEntries] = useLocalStorage<MealEntry[]>('nutrition-daily-entries', []);
+  const [customFoodItems, setCustomFoodItems] = useLocalStorage<FoodItem[]>('nutrition-custom-foods', []); // New state for custom foods
   
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmedSearchQuery, setConfirmedSearchQuery] = useState('');
@@ -100,11 +102,13 @@ export default function NutritionCalculator() {
   const [recognizedFood, setRecognizedFood] = useState<FoodItem | null>(null);
 
   const allAvailableFoods = useMemo(() => {
-    return foodDatabase.map(food => ({
+    // Combine static food database with custom food items
+    const combinedFoods = [...foodDatabase, ...customFoodItems];
+    return combinedFoods.map(food => ({
       ...food,
       name: i18n.language === 'sl' && food.name_sl ? food.name_sl : food.name,
     }));
-  }, [foodDatabase, i18n.language]);
+  }, [foodDatabase, customFoodItems, i18n.language]); // Added customFoodItems to dependencies
 
   const filteredFoods = useMemo(() => {
     return allAvailableFoods.filter(food =>
@@ -132,15 +136,12 @@ export default function NutritionCalculator() {
       return;
     }
     // Find the first food that matches the confirmed search query
-    const foundFood = foodDatabase.find(food => // Search original foodDatabase for consistent ID
-      food.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase()) ||
-      (food.name_sl && food.name_sl.toLowerCase().includes(confirmedSearchQuery.toLowerCase()))
+    // Search in allAvailableFoods (which now includes custom foods)
+    const foundFood = allAvailableFoods.find(food => 
+      food.name.toLowerCase().includes(confirmedSearchQuery.toLowerCase())
     );
 
     if (foundFood) {
-      // Use the localized name for display in toast
-      const localizedFoodName = i18n.language === 'sl' && foundFood.name_sl ? foundFood.name_sl : foundFood.name;
-      
       // Automatically add to daily log with default 1 serving and 'snack' meal type
       handleAddFoodToDailyLog(foundFood, 1, 'snack'); 
       
@@ -152,7 +153,7 @@ export default function NutritionCalculator() {
       setRecognizedFood(null);
       toast.error(t('toast.foodNotFound', { foodName: confirmedSearchQuery })); // New toast message
     }
-  }, [confirmedSearchQuery, foodDatabase, i18n.language, t]); // Added i18n.language and t to dependencies
+  }, [confirmedSearchQuery, allAvailableFoods, i18n.language, t]); // Updated dependencies to allAvailableFoods
 
   const displayNutrition = useMemo(() => {
     if (!recognizedFood) return null;
@@ -189,6 +190,10 @@ export default function NutritionCalculator() {
   const handleDeleteSavedMeal = (id: string) => {
     setSavedMeals(prev => prev.filter(meal => meal.id !== id));
     toast.info(t('toast.savedMealRemoved'));
+  };
+
+  const handleSaveCustomFood = (newFood: FoodItem) => {
+    setCustomFoodItems(prev => [...prev, newFood]);
   };
 
   const handleConfirmSearch = () => {
@@ -279,11 +284,11 @@ export default function NutritionCalculator() {
       </div>
 
       <Tabs defaultValue="daily-log" className="w-full">
-        <TabsList className="grid w-full grid-cols-4"> {/* Changed to grid-cols-4 */}
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="daily-log">{t('nutritionCalculator.dailyLog')}</TabsTrigger>
           <TabsTrigger value="food-database">{t('nutritionCalculator.foodDatabase')}</TabsTrigger>
           <TabsTrigger value="saved-meals">{t('nutritionCalculator.savedMeals')}</TabsTrigger>
-          <TabsTrigger value="nutrition-trends"> {/* New tab trigger */}
+          <TabsTrigger value="nutrition-trends">
             <LineChartIcon className="h-4 w-4 mr-2" />
             {t('nutritionCalculator.nutritionTrends')}
           </TabsTrigger>
@@ -311,7 +316,7 @@ export default function NutritionCalculator() {
               <div className="space-y-4">
                 <ScrollArea className="h-[400px] pr-4">
                   <div className="space-y-2">
-                    {allAvailableFoods.map((food) => (
+                    {allAvailableFoods.map((food) => ( // Now includes custom foods
                       <Card key={food.id} className="p-3 hover:bg-accent/5 transition-colors">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
@@ -352,6 +357,14 @@ export default function NutritionCalculator() {
                   </div>
                 </ScrollArea>
               </div>
+              <div className="mt-6 flex justify-end"> {/* New button for custom food */}
+                <CreateCustomFoodDialog onSave={handleSaveCustomFood}>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t('nutritionCalculator.createCustomFood')}
+                  </Button>
+                </CreateCustomFoodDialog>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -370,7 +383,7 @@ export default function NutritionCalculator() {
             </CreateSavedMealDialog>
           </div>
         </TabsContent>
-        <TabsContent value="nutrition-trends" className="mt-6"> {/* New tab content */}
+        <TabsContent value="nutrition-trends" className="mt-6">
           <NutritionTrendsChart dailyEntries={dailyEntries} dailyGoals={dailyGoals} />
         </TabsContent>
       </Tabs>
