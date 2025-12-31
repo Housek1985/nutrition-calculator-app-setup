@@ -7,23 +7,26 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Sun, Moon, Utensils } from 'lucide-react'; // Import Utensils icon
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Sun, Moon, Utensils } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from 'next-themes';
-import CreateSavedMealDialog from './CreateSavedMealDialog'; // Import CreateSavedMealDialog
-import SavedMealsList from './SavedMealsList'; // Import SavedMealsList
+import CreateSavedMealDialog from './CreateSavedMealDialog';
+import SavedMealsList from './SavedMealsList';
+import useLocalStorage from '@/hooks/use-local-storage'; // Import useLocalStorage
 
 export default function NutritionCalculator() {
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
 
-  const [meals, setMeals] = useState<MealEntry[]>([]);
-  const [savedMeals, setSavedMeals] = useState<SavedMeal[]>([]); // New state for saved meals
+  // Use useLocalStorage for meals and savedMeals
+  const [meals, setMeals] = useLocalStorage<MealEntry[]>('nutrition-meals', []);
+  const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
   const [dailyGoals, setDailyGoals] = useState<DailyGoals>({
