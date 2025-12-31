@@ -1,4 +1,3 @@
-
 export interface FoodItem {
   id: string;
   name: string;
@@ -30,4 +29,17 @@ export interface NutritionTotals {
   protein: number;
   carbs: number;
   fats: number;
+}
+
+// New interface for a food item within a saved meal
+export interface SavedMealFoodItem {
+  foodItem: FoodItem;
+  servings: number;
+}
+
+// New interface for a saved meal
+export interface SavedMeal {
+  id: string;
+  name: string;
+  items: SavedMealFoodItem[];
 }

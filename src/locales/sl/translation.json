@@ -21,10 +21,27 @@
     "noMealsOfTypeAdded": "Nobenih {{type}} obrokov še ni dodanih.",
     "dailyGoals": "Dnevni cilji",
     "dailyGoalsDescription": "Nastavite svoje dnevne prehranske cilje",
-    "servings": "porcije"
+    "servings": "porcije",
+    "savedMeals": "Shranjeni obroki",
+    "savedMealsDescription": "Ustvarite in upravljajte svoje prilagojene obroke.",
+    "noSavedMeals": "Nobenih shranjenih obrokov še ni. Ustvarite svojega prvega!",
+    "createSavedMeal": "Ustvari shranjen obrok",
+    "createSavedMealDescription": "Združite živila za ustvarjanje obroka za večkratno uporabo.",
+    "mealName": "Ime obroka",
+    "addFood": "Dodaj živilo",
+    "selectFood": "Izberite živilo",
+    "mealContents": "Vsebina obroka",
+    "noItemsInMeal": "V ta obrok še niso dodana živila.",
+    "cancel": "Prekliči",
+    "saveMeal": "Shrani obrok"
   },
   "toast": {
     "foodAdded": "Dodano {{foodName}} k {{mealType}}",
-    "mealRemoved": "Obrok odstranjen"
+    "mealRemoved": "Obrok odstranjen",
+    "mealNameRequired": "Ime obroka je obvezno.",
+    "mealItemsRequired": "Dodajte vsaj eno živilo k obroku.",
+    "mealSaved": "Obrok '{{mealName}}' shranjen!",
+    "savedMealAdded": "Dodano '{{mealName}}' k {{mealType}}",
+    "savedMealRemoved": "Shranjeni obrok odstranjen"
   }
 }

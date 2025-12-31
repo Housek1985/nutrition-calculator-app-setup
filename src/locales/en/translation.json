@@ -21,10 +21,27 @@
     "noMealsOfTypeAdded": "No {{type}} meals added yet.",
     "dailyGoals": "Daily Goals",
     "dailyGoalsDescription": "Set your daily nutrition targets",
-    "servings": "servings"
+    "servings": "servings",
+    "savedMeals": "Saved Meals",
+    "savedMealsDescription": "Create and manage your custom meals.",
+    "noSavedMeals": "No saved meals yet. Create your first one!",
+    "createSavedMeal": "Create Saved Meal",
+    "createSavedMealDescription": "Combine food items to create a reusable meal.",
+    "mealName": "Meal Name",
+    "addFood": "Add Food",
+    "selectFood": "Select a food item",
+    "mealContents": "Meal Contents",
+    "noItemsInMeal": "No items added to this meal yet.",
+    "cancel": "Cancel",
+    "saveMeal": "Save Meal"
   },
   "toast": {
     "foodAdded": "Added {{foodName}} to {{mealType}}",
-    "mealRemoved": "Meal removed"
+    "mealRemoved": "Meal removed",
+    "mealNameRequired": "Meal name is required.",
+    "mealItemsRequired": "Add at least one food item to the meal.",
+    "mealSaved": "Meal '{{mealName}}' saved!",
+    "savedMealAdded": "Added '{{mealName}}' to {{mealType}}",
+    "savedMealRemoved": "Saved meal removed"
   }
 }

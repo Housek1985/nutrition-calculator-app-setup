@@ -7,20 +7,23 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Sun, Moon } from 'lucide-react'; // Import Sun and Moon icons
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Sun, Moon, Utensils } from 'lucide-react'; // Import Utensils icon
 import { foodDatabase } from '@/data/foodDatabase';
-import { MealEntry, DailyGoals, NutritionTotals, FoodItem } from '@/types/nutrition';
+import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from 'next-themes'; // Import useTheme
+import { useTheme } from 'next-themes';
+import CreateSavedMealDialog from './CreateSavedMealDialog'; // Import CreateSavedMealDialog
+import SavedMealsList from './SavedMealsList'; // Import SavedMealsList
 
 export default function NutritionCalculator() {
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
-  const { theme, setTheme } = useTheme(); // Use the theme hook
+  const { theme, setTheme } = useTheme();
 
   const [meals, setMeals] = useState<MealEntry[]>([]);
+  const [savedMeals, setSavedMeals] = useState<SavedMeal[]>([]); // New state for saved meals
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
   const [dailyGoals, setDailyGoals] = useState<DailyGoals>({
@@ -60,6 +63,18 @@ export default function NutritionCalculator() {
     toast.success(t('toast.foodAdded', { foodName: foodItem.name, mealType: t(`nutritionCalculator.${selectedMealType}`) }));
   };
 
+  const addSavedMealToLog = (savedMeal: SavedMeal) => {
+    const newMealEntries: MealEntry[] = savedMeal.items.map(item => ({
+      id: Date.now().toString() + '-' + item.foodItem.id, // Unique ID for each item from saved meal
+      foodItem: item.foodItem,
+      servings: item.servings,
+      mealType: selectedMealType, // Use the currently selected meal type
+      timestamp: new Date(),
+    }));
+    setMeals(prevMeals => [...prevMeals, ...newMealEntries]);
+    toast.success(t('toast.savedMealAdded', { mealName: savedMeal.name, mealType: t(`nutritionCalculator.${selectedMealType}`) }));
+  };
+
   const removeMeal = (id: string) => {
     setMeals(meals.filter(meal => meal.id !== id));
     toast.info(t('toast.mealRemoved'));
@@ -79,6 +94,15 @@ export default function NutritionCalculator() {
     return Math.min((current / goal) * 100, 100);
   };
 
+  const handleSaveNewMeal = (newMeal: SavedMeal) => {
+    setSavedMeals(prev => [...prev, newMeal]);
+  };
+
+  const handleDeleteSavedMeal = (id: string) => {
+    setSavedMeals(prev => prev.filter(meal => meal.id !== id));
+    toast.info(t('toast.savedMealRemoved'));
+  };
+
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <div className="mb-8 text-center">
@@ -86,11 +110,10 @@ export default function NutritionCalculator() {
           {t('nutritionCalculator.title')}
         </h1>
         <p className="text-muted-foreground">{t('nutritionCalculator.description')}</p>
-        <div className="mt-4 flex justify-center items-center gap-2"> {/* Added flex and gap for alignment */}
+        <div className="mt-4 flex justify-center items-center gap-2">
           <Button onClick={() => changeLanguage('en')} variant={language === 'en' ? 'default' : 'outline'} className="mr-2">EN</Button>
           <Button onClick={() => changeLanguage('sl')} variant={language === 'sl' ? 'default' : 'outline'}>SL</Button>
 
-          {/* Theme Toggle Button */}
           <Button
             variant="outline"
             size="icon"
@@ -156,7 +179,7 @@ export default function NutritionCalculator() {
         </Card>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 mb-6">
         {/* Food Database */}
         <Card>
           <CardHeader>
@@ -228,39 +251,99 @@ export default function NutritionCalculator() {
           </CardContent>
         </Card>
 
-        {/* Daily Log */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('nutritionCalculator.todaysMeals')}</CardTitle>
-            <CardDescription>{t('nutritionCalculator.todaysMealsDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="all" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="all">{t('nutritionCalculator.all')}</TabsTrigger>
-                <TabsTrigger value="breakfast">{t('nutritionCalculator.breakfast')}</TabsTrigger>
-                <TabsTrigger value="lunch">{t('nutritionCalculator.lunch')}</TabsTrigger>
-                <TabsTrigger value="dinner">{t('nutritionCalculator.dinner')}</TabsTrigger>
-                <TabsTrigger value="snack">{t('nutritionCalculator.snack')}</TabsTrigger>
-              </TabsList>
+        {/* Saved Meals List */}
+        <SavedMealsList
+          savedMeals={savedMeals}
+          onAddMealToLog={addSavedMealToLog}
+          onDeleteMeal={handleDeleteSavedMeal}
+        />
+      </div>
 
-              <ScrollArea className="h-[400px] mt-4">
-                <TabsContent value="all" className="space-y-2 mt-0">
-                  {meals.length === 0 ? (
+      {/* Daily Log */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>{t('nutritionCalculator.todaysMeals')}</CardTitle>
+          <CardDescription>{t('nutritionCalculator.todaysMealsDescription')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="all">{t('nutritionCalculator.all')}</TabsTrigger>
+              <TabsTrigger value="breakfast">{t('nutritionCalculator.breakfast')}</TabsTrigger>
+              <TabsTrigger value="lunch">{t('nutritionCalculator.lunch')}</TabsTrigger>
+              <TabsTrigger value="dinner">{t('nutritionCalculator.dinner')}</TabsTrigger>
+              <TabsTrigger value="snack">{t('nutritionCalculator.snack')}</TabsTrigger>
+            </TabsList>
+
+            <ScrollArea className="h-[400px] mt-4">
+              <TabsContent value="all" className="space-y-2 mt-0">
+                {meals.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    {t('nutritionCalculator.noMealsAdded')}
+                  </div>
+                ) : (
+                  meals.map((meal) => (
+                    <Card key={meal.id} className="p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
+                            <Badge variant="secondary" className="text-xs">
+                              {t(`nutritionCalculator.${meal.mealType}`)}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Input
+                              type="number"
+                              value={meal.servings}
+                              onChange={(e) => updateServings(meal.id, parseFloat(e.target.value))}
+                              className="w-20 h-7 text-xs"
+                              step="0.5"
+                              min="0.1"
+                            />
+                            <span className="text-xs text-muted-foreground">× {meal.foodItem.serving}</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <Badge variant="secondary" className="font-normal">
+                              {(meal.foodItem.calories * meal.servings).toFixed(0)} cal
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              P: {(meal.foodItem.protein * meal.servings).toFixed(1)}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              C: {(meal.foodItem.carbs * meal.servings).toFixed(1)}g
+                            </Badge>
+                            <Badge variant="outline" className="font-normal">
+                              F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
+                            </Badge>
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeMeal(meal.id)}
+                          className="shrink-0 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </Card>
+                  ))
+                )}
+              </TabsContent>
+
+              {['breakfast', 'lunch', 'dinner', 'snack'].map((type) => (
+                <TabsContent key={type} value={type} className="space-y-2 mt-0">
+                  {getMealsByType(type).length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
-                      {t('nutritionCalculator.noMealsAdded')}
+                      {t('nutritionCalculator.noMealsOfTypeAdded', { type: t(`nutritionCalculator.${type}`) })}
                     </div>
                   ) : (
-                    meals.map((meal) => (
+                    getMealsByType(type).map((meal) => (
                       <Card key={meal.id} className="p-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
-                              <Badge variant="secondary" className="text-xs">
-                                {t(`nutritionCalculator.${meal.mealType}`)}
-                              </Badge>
-                            </div>
+                            <h4 className="font-semibold text-sm mb-1">{meal.foodItem.name}</h4>
                             <div className="flex items-center gap-2 mb-2">
                               <Input
                                 type="number"
@@ -300,64 +383,11 @@ export default function NutritionCalculator() {
                     ))
                   )}
                 </TabsContent>
-
-                {['breakfast', 'lunch', 'dinner', 'snack'].map((type) => (
-                  <TabsContent key={type} value={type} className="space-y-2 mt-0">
-                    {getMealsByType(type).length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">
-                        {t('nutritionCalculator.noMealsOfTypeAdded', { type: t(`nutritionCalculator.${type}`) })}
-                      </div>
-                    ) : (
-                      getMealsByType(type).map((meal) => (
-                        <Card key={meal.id} className="p-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-sm mb-1">{meal.foodItem.name}</h4>
-                              <div className="flex items-center gap-2 mb-2">
-                                <Input
-                                  type="number"
-                                  value={meal.servings}
-                                  onChange={(e) => updateServings(meal.id, parseFloat(e.target.value))}
-                                  className="w-20 h-7 text-xs"
-                                  step="0.5"
-                                  min="0.1"
-                                />
-                                <span className="text-xs text-muted-foreground">× {meal.foodItem.serving}</span>
-                              </div>
-                              <div className="flex flex-wrap gap-2 text-xs">
-                                <Badge variant="secondary" className="font-normal">
-                                  {(meal.foodItem.calories * meal.servings).toFixed(0)} cal
-                                </Badge>
-                                <Badge variant="outline" className="font-normal">
-                                  P: {(meal.foodItem.protein * meal.servings).toFixed(1)}g
-                                </Badge>
-                                <Badge variant="outline" className="font-normal">
-                                  C: {(meal.foodItem.carbs * meal.servings).toFixed(1)}g
-                                </Badge>
-                                <Badge variant="outline" className="font-normal">
-                                  F: {(meal.foodItem.fats * meal.servings).toFixed(1)}g
-                                </Badge>
-                              </div>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => removeMeal(meal.id)}
-                              className="shrink-0 text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </Card>
-                      ))
-                    )}
-                  </TabsContent>
-                ))}
-              </ScrollArea>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+              ))}
+            </ScrollArea>
+          </Tabs>
+        </CardContent>
+      </Card>
 
       {/* Daily Goals Settings */}
       <Card className="mt-6">
@@ -406,6 +436,16 @@ export default function NutritionCalculator() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Button to create new saved meal */}
+      <div className="mt-6 flex justify-end">
+        <CreateSavedMealDialog onSave={handleSaveNewMeal}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            {t('nutritionCalculator.createSavedMeal')}
+          </Button>
+        </CreateSavedMealDialog>
+      </div>
     </div>
   );
 }
