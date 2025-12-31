@@ -7,16 +7,18 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Sun, Moon } from 'lucide-react'; // Import Sun and Moon icons
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem } from '@/types/nutrition';
 import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
-import { useLanguage } from '@/contexts/LanguageContext'; // Import useLanguage
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from 'next-themes'; // Import useTheme
 
 export default function NutritionCalculator() {
-  const { t } = useTranslation(); // Initialize useTranslation
-  const { language, changeLanguage } = useLanguage(); // Use the language context
+  const { t } = useTranslation();
+  const { language, changeLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme(); // Use the theme hook
 
   const [meals, setMeals] = useState<MealEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,9 +86,23 @@ export default function NutritionCalculator() {
           {t('nutritionCalculator.title')}
         </h1>
         <p className="text-muted-foreground">{t('nutritionCalculator.description')}</p>
-        <div className="mt-4">
+        <div className="mt-4 flex justify-center items-center gap-2"> {/* Added flex and gap for alignment */}
           <Button onClick={() => changeLanguage('en')} variant={language === 'en' ? 'default' : 'outline'} className="mr-2">EN</Button>
           <Button onClick={() => changeLanguage('sl')} variant={language === 'sl' ? 'default' : 'outline'}>SL</Button>
+
+          {/* Theme Toggle Button */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            {theme === "dark" ? (
+              <Sun className="h-[1.2rem] w-[1.2rem]" />
+            ) : (
+              <Moon className="h-[1.2rem] w-[1.2rem]" />
+            )}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
         </div>
       </div>
 
