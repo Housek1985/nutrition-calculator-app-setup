@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar } from 'lucide-react'; // Import ChartBar icon
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon } from 'lucide-react'; // Import Sun and Moon icons
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -18,20 +18,19 @@ import CreateSavedMealDialog from './CreateSavedMealDialog';
 import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
-import NutritionCharts from './NutritionCharts'; // Import NutritionCharts
+import NutritionCharts from './NutritionCharts';
 
 export default function NutritionCalculator() {
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage(); // Keep for potential future use or if SettingsDialog doesn't fully replace
-  const { theme, setTheme } = useTheme(); // Keep for potential future use or if SettingsDialog doesn't fully replace
+  const { language, changeLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
 
-  // Use useLocalStorage for meals and savedMeals
   const [meals, setMeals] = useLocalStorage<MealEntry[]>('nutrition-meals', []);
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
-  const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', { // Use useLocalStorage for dailyGoals
+  const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', {
     calories: 2000,
     protein: 150,
     carbs: 250,
@@ -70,10 +69,10 @@ export default function NutritionCalculator() {
 
   const addSavedMealToLog = (savedMeal: SavedMeal) => {
     const newMealEntries: MealEntry[] = savedMeal.items.map(item => ({
-      id: Date.now().toString() + '-' + item.foodItem.id, // Unique ID for each item from saved meal
+      id: Date.now().toString() + '-' + item.foodItem.id,
       foodItem: item.foodItem,
       servings: item.servings,
-      mealType: selectedMealType, // Use the currently selected meal type
+      mealType: selectedMealType,
       timestamp: new Date(),
     }));
     setMeals(prevMeals => [...prevMeals, ...newMealEntries]);
@@ -123,6 +122,20 @@ export default function NutritionCalculator() {
               <span className="sr-only">{t('settings.title')}</span>
             </Button>
           </SettingsDialog>
+
+          {/* Theme Toggle Button */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            {theme === "dark" ? (
+              <Sun className="h-[1.2rem] w-[1.2rem]" />
+            ) : (
+              <Moon className="h-[1.2rem] w-[1.2rem]" />
+            )}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
         </div>
       </div>
 
