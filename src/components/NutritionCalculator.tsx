@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'; // Added Tabs imports
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
-import { DailyGoals, FoodItem, SavedMeal } from '@/types/nutrition';
+import { DailyGoals, FoodItem, SavedMeal, MealEntry } from '@/types/nutrition'; // Added MealEntry
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -18,7 +18,7 @@ import CreateSavedMealDialog from './CreateSavedMealDialog';
 import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
-// Removed import CreateCustomFoodDialog from './CreateCustomFoodDialog';
+import DailyLogTab from './DailyLogTab'; // New import for DailyLogTab
 
 interface DisplayNutrition {
   calories: number;
@@ -80,9 +80,10 @@ export default function NutritionCalculator() {
   const { theme, setTheme } = useTheme();
 
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
+  const [dailyEntries, setDailyEntries] = useLocalStorage<MealEntry[]>('nutrition-daily-entries', []); // New state for daily entries
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState(''); // New state for confirmed search
+  const [confirmedSearchQuery, setConfirmedSearchQuery] = useState('');
   const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', {
     calories: 2000,
     protein: 150,
@@ -134,6 +135,25 @@ export default function NutritionCalculator() {
 
   const handleConfirmSearch = () => {
     setConfirmedSearchQuery(searchQuery);
+  };
+
+  // Function to add a food item to the daily log
+  const handleAddFoodToDailyLog = (foodItem: FoodItem, servings: number, mealType: MealEntry['mealType']) => {
+    const newEntry: MealEntry = {
+      id: Date.now().toString(),
+      foodItem,
+      servings,
+      mealType,
+      timestamp: new Date(),
+    };
+    setDailyEntries(prev => [...prev, newEntry]);
+    toast.success(t('toast.foodAddedToLog', { foodName: foodItem.name }));
+  };
+
+  // Function to remove a food item from the daily log
+  const handleRemoveFoodFromDailyLog = (entryId: string) => {
+    setDailyEntries(prev => prev.filter(entry => entry.id !== entryId));
+    toast.info(t('toast.foodRemovedFromLog'));
   };
 
   return (
@@ -244,75 +264,90 @@ export default function NutritionCalculator() {
         </Card>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2 mb-6">
-        {/* Food Database */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Apple className="h-5 w-5" />
-              {t('nutritionCalculator.foodDatabase')}
-            </CardTitle>
-            <CardDescription>{t('nutritionCalculator.foodDatabaseDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <ScrollArea className="h-[400px] pr-4">
-                <div className="space-y-2">
-                  {filteredFoods.map((food) => (
-                    <Card key={food.id} className="p-3 hover:bg-accent/5 transition-colors">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm mb-1">{food.name}</h4>
-                          <p className="text-xs text-muted-foreground mb-2">{food.serving}</p>
-                          <div className="flex flex-wrap gap-2 text-xs">
-                            <Badge variant="secondary" className="font-normal">
-                              {food.calories} cal
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              P: {food.protein}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              C: {food.carbs}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              F: {food.fats}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              V: {food.fiber}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              S: {food.sugar}g
-                            </Badge>
-                            <Badge variant="outline" className="font-normal">
-                              Na: {food.sodium}mg
-                            </Badge>
+      <Tabs defaultValue="daily-log" className="w-full"> {/* Default to daily-log */}
+        <TabsList className="grid w-full grid-cols-3"> {/* Adjusted grid-cols */}
+          <TabsTrigger value="daily-log">{t('nutritionCalculator.dailyLog')}</TabsTrigger>
+          <TabsTrigger value="food-database">{t('nutritionCalculator.foodDatabase')}</TabsTrigger>
+          <TabsTrigger value="saved-meals">{t('nutritionCalculator.savedMeals')}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="daily-log" className="mt-6">
+          <DailyLogTab 
+            dailyEntries={dailyEntries} 
+            onRemoveEntry={handleRemoveFoodFromDailyLog} 
+            dailyGoals={dailyGoals} 
+            allAvailableFoods={allAvailableFoods} // Pass allAvailableFoods
+            onAddFoodToDailyLog={handleAddFoodToDailyLog} // Pass the add function
+            savedMeals={savedMeals} // Pass saved meals
+          />
+        </TabsContent>
+        <TabsContent value="food-database" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Apple className="h-5 w-5" />
+                {t('nutritionCalculator.foodDatabase')}
+              </CardTitle>
+              <CardDescription>{t('nutritionCalculator.foodDatabaseDescription')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <ScrollArea className="h-[400px] pr-4">
+                  <div className="space-y-2">
+                    {filteredFoods.map((food) => (
+                      <Card key={food.id} className="p-3 hover:bg-accent/5 transition-colors">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm mb-1">{food.name}</h4>
+                            <p className="text-xs text-muted-foreground mb-2">{food.serving}</p>
+                            <div className="flex flex-wrap gap-2 text-xs">
+                              <Badge variant="secondary" className="font-normal">
+                                {food.calories} cal
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                P: {food.protein}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                C: {food.carbs}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                F: {food.fats}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                V: {food.fiber}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                S: {food.sugar}g
+                              </Badge>
+                              <Badge variant="outline" className="font-normal">
+                                Na: {food.sodium}mg
+                              </Badge>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Saved Meals List */}
-        <SavedMealsList
-          savedMeals={savedMeals}
-          onDeleteMeal={handleDeleteSavedMeal}
-        />
-      </div>
-
-      {/* Button to create new saved meal */}
-      <div className="mt-6 flex justify-end">
-        <CreateSavedMealDialog onSave={handleSaveNewMeal}>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            {t('nutritionCalculator.createSavedMeal')}
-          </Button>
-        </CreateSavedMealDialog>
-      </div>
+                      </Card>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="saved-meals" className="mt-6">
+          <SavedMealsList
+            savedMeals={savedMeals}
+            onDeleteMeal={handleDeleteSavedMeal}
+          />
+          {/* Button to create new saved meal - moved inside TabsContent */}
+          <div className="mt-6 flex justify-end">
+            <CreateSavedMealDialog onSave={handleSaveNewMeal}>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                {t('nutritionCalculator.createSavedMeal')}
+              </Button>
+            </CreateSavedMealDialog>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

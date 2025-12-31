@@ -38,7 +38,22 @@
     "saveFood": "Save Food",
     "nutritionPer100g": "Nutrition for {{foodName}} (per 100g)",
     "nutritionPer100gDescription": "Estimated nutritional values per 100 grams.",
-    "confirmSearch": "Confirm Search"
+    "confirmSearch": "Confirm Search",
+    "dailyLog": "Daily Log",
+    "todaysIntake": "Today's Intake",
+    "todaysIntakeDescription": "Summary of your nutrition for today.",
+    "addFoodToLog": "Add to Daily Log",
+    "addFoodToLogDescription": "Add individual food items or saved meals to your daily intake.",
+    "mealType": "Meal Type",
+    "selectMealType": "Select meal type",
+    "addSingleFood": "Add Single Food",
+    "addFood": "Add Food",
+    "addSavedMeal": "Add Saved Meal",
+    "selectSavedMeal": "Select a saved meal",
+    "addMeal": "Add Meal",
+    "dailyLogEntries": "Daily Log Entries",
+    "dailyLogEntriesDescription": "All food items logged for today.",
+    "noEntriesYet": "No food entries for today yet. Start logging your meals!"
   },
   "toast": {
     "mealNameRequired": "Meal name is required.",
@@ -46,7 +61,12 @@
     "mealSaved": "Meal '{{mealName}}' saved!",
     "savedMealRemoved": "Saved meal removed",
     "foodNameRequired": "Food name is required.",
-    "customFoodSaved": "Custom food '{{foodName}}' saved!"
+    "customFoodSaved": "Custom food '{{foodName}}' saved!",
+    "foodAddedToLog": "Added {{foodName}} to daily log!",
+    "foodRemovedFromLog": "Food item removed from daily log.",
+    "selectFoodAndServings": "Please select a food and enter servings.",
+    "selectSavedMeal": "Please select a saved meal.",
+    "savedMealAddedToLog": "Saved meal '{{mealName}}' added to daily log!"
   },
   "settings": {
     "title": "Settings",

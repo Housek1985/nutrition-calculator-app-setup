@@ -38,7 +38,22 @@
     "saveFood": "Shrani živilo",
     "nutritionPer100g": "Prehrana za {{foodName}} (na 100g)",
     "nutritionPer100gDescription": "Ocenjene hranilne vrednosti na 100 gramov.",
-    "confirmSearch": "Potrdi iskanje"
+    "confirmSearch": "Potrdi iskanje",
+    "dailyLog": "Dnevni vnos",
+    "todaysIntake": "Današnji vnos",
+    "todaysIntakeDescription": "Povzetek vašega današnjega vnosa hranil.",
+    "addFoodToLog": "Dodaj v dnevni vnos",
+    "addFoodToLogDescription": "Dodajte posamezna živila ali shranjene obroke v svoj dnevni vnos.",
+    "mealType": "Vrsta obroka",
+    "selectMealType": "Izberite vrsto obroka",
+    "addSingleFood": "Dodaj posamezno živilo",
+    "addFood": "Dodaj živilo",
+    "addSavedMeal": "Dodaj shranjen obrok",
+    "selectSavedMeal": "Izberite shranjen obrok",
+    "addMeal": "Dodaj obrok",
+    "dailyLogEntries": "Vnosi v dnevnik",
+    "dailyLogEntriesDescription": "Vsi vneseni živili za danes.",
+    "noEntriesYet": "Za danes še ni vnosov živil. Začnite beležiti svoje obroke!"
   },
   "toast": {
     "mealNameRequired": "Ime obroka je obvezno.",
@@ -46,7 +61,12 @@
     "mealSaved": "Obrok '{{mealName}}' shranjen!",
     "savedMealRemoved": "Shranjeni obrok odstranjen",
     "foodNameRequired": "Ime živila je obvezno.",
-    "customFoodSaved": "Lastno živilo '{{foodName}}' shranjeno!"
+    "customFoodSaved": "Lastno živilo '{{foodName}}' shranjeno!",
+    "foodAddedToLog": "Dodano {{foodName}} v dnevni vnos!",
+    "foodRemovedFromLog": "Živilo odstranjeno iz dnevnega vnosa.",
+    "selectFoodAndServings": "Prosimo, izberite živilo in vnesite porcije.",
+    "selectSavedMeal": "Prosimo, izberite shranjen obrok.",
+    "savedMealAddedToLog": "Shranjeni obrok '{{mealName}}' dodan v dnevni vnos!"
   },
   "settings": {
     "title": "Nastavitve",
