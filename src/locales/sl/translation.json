@@ -85,5 +85,9 @@
     "lightTheme": "Svetla",
     "darkTheme": "Temna",
     "close": "Zapri"
+  },
+  "login": {
+    "welcome": "Dobrodošli v Buildify Prehrana!",
+    "continueAsGuest": "Nadaljuj kot gost"
   }
 }

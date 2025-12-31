@@ -85,5 +85,9 @@
     "lightTheme": "Light",
     "darkTheme": "Dark",
     "close": "Close"
+  },
+  "login": {
+    "welcome": "Welcome to Buildify Nutrition!",
+    "continueAsGuest": "Continue as Guest"
   }
 }
