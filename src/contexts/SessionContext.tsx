@@ -9,7 +9,7 @@ interface SessionContextType {
   user: User | null;
   isLoading: boolean;
   isGuest: boolean;
-  setIsGuest: (value: boolean) => void; // Dodana funkcija za posodabljanje stanja gosta
+  setIsGuest: (value: boolean) => void;
   logout: () => Promise<void>;
 }
 
@@ -19,61 +19,43 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isGuest, setIsGuest] = useLocalStorage('is-guest', false); // Uporabljamo useLocalStorage
-  const navigate = useNavigate();
+  const [isGuest, setIsGuest] = useLocalStorage('is-guest', false);
+  const navigate = useNavigate(); // Keep navigate for logout
 
   useEffect(() => {
-    const handleAuthAndGuestStatus = async () => {
+    const getInitialSession = async () => {
       setIsLoading(true);
-
-      // Pridobi trenutno sejo
       const { data: { session: currentSession } } = await supabase.auth.getSession();
       setSession(currentSession);
       setUser(currentSession?.user || null);
-
-      // Pridobi trenutno stanje gosta neposredno iz localStorage, da zagotovimo svežino
-      const guestStatusFromLS = localStorage.getItem('is-guest');
-      const currentIsGuestFromLS = guestStatusFromLS ? JSON.parse(guestStatusFromLS) : false;
-      setIsGuest(currentIsGuestFromLS); // Posodobi stanje isGuest v kontekstu
-
-      if (!currentSession && !currentIsGuestFromLS) {
-        // Če ni seje in ni gost, preusmeri na prijavo
-        navigate('/login');
-      } else if (currentSession || currentIsGuestFromLS) {
-        // Če je seja ali je gost, preusmeri na domačo stran
-        navigate('/');
-      }
+      // The initial isGuest state is already loaded by useLocalStorage
       setIsLoading(false);
     };
 
-    // Zaženi začetno preverjanje
-    handleAuthAndGuestStatus();
+    getInitialSession();
 
-    // Nastavi poslušalca za spremembe stanja avtentikacije
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user || null);
         setIsLoading(false);
 
-        // Ponovno oceni stanje gosta ob dogodkih avtentikacije
-        const guestStatusFromLS = localStorage.getItem('is-guest');
-        const currentIsGuestFromLS = guestStatusFromLS ? JSON.parse(guestStatusFromLS) : false;
-        setIsGuest(currentIsGuestFromLS); // Posodobi stanje isGuest v kontekstu
-
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-          // Če je prijavljen, zagotovi, da stanje gosta ni aktivno
+          // If signed in, ensure guest status is false
           setIsGuest(false);
           localStorage.setItem('is-guest', JSON.stringify(false));
-          navigate('/');
+          // AuthWrapper will handle navigation to '/'
         } else if (event === 'SIGNED_OUT') {
           setSession(null);
           setUser(null);
-          // Če je odjavljen in ni gost, pojdi na prijavo
+          // If signed out and not a guest, navigate to login
+          // AuthWrapper will also handle this, but explicit navigation here ensures immediate redirect
+          // if the user was previously authenticated and then signed out.
+          const guestStatusFromLS = localStorage.getItem('is-guest');
+          const currentIsGuestFromLS = guestStatusFromLS ? JSON.parse(guestStatusFromLS) : false;
           if (!currentIsGuestFromLS) {
             navigate('/login');
           }
-          // Če je odjavljen in JE gost, ostani na '/' (obravnava AuthWrapper)
         }
       }
     );
@@ -81,14 +63,14 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [navigate, setIsGuest]); // setIsGuest je stabilna funkcija iz useLocalStorage
+  }, [navigate, setIsGuest]); // Dependencies: navigate for logout, setIsGuest for internal state management
 
   const logout = async () => {
     setIsLoading(true);
     const { error } = await supabase.auth.signOut();
     if (!error) {
-      setIsGuest(false); // Počisti stanje gosta ob eksplicitni odjavi
-      localStorage.setItem('is-guest', JSON.stringify(false));
+      setIsGuest(false); // Clear guest status on explicit logout
+      localStorage.setItem('is-guest', JSON.stringify(false)); // Explicitly clear local storage
       navigate('/login');
     } else {
       console.error('Napaka pri odjavi:', error.message);
