@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, UtensilsCrossed } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
-import { DailyGoals, FoodItem, SavedMeal } from '@/types/nutrition'; // Removed MealEntry, NutritionTotals
+import { DailyGoals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -20,17 +20,69 @@ import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
 import CreateCustomFoodDialog from './CreateCustomFoodDialog';
 
+interface DisplayNutrition {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+  fiber: number;
+  sugar: number;
+  sodium: number;
+}
+
+// Helper function to calculate nutrition per 100g
+function calculateNutritionPer100g(food: FoodItem): DisplayNutrition | null {
+  let servingInGrams: number | null = null;
+
+  // Try to extract grams from serving string (e.g., "100g", "28g")
+  const gramMatch = food.serving.match(/(\d+(\.\d+)?)\s*g/i);
+  if (gramMatch && gramMatch[1]) {
+    servingInGrams = parseFloat(gramMatch[1]);
+  } else {
+    // Try to extract ounces and convert to grams (e.g., "1 oz (28g)")
+    const ozMatch = food.serving.match(/(\d+(\.\d+)?)\s*oz/i);
+    if (ozMatch && ozMatch[1]) {
+      const oz = parseFloat(ozMatch[1]);
+      servingInGrams = oz * 28.35; // 1 oz = 28.35 grams
+    }
+  }
+
+  if (servingInGrams && servingInGrams > 0) {
+    const factor = 100 / servingInGrams;
+    return {
+      calories: food.calories * factor,
+      protein: food.protein * factor,
+      carbs: food.carbs * factor,
+      fats: food.fats * factor,
+      fiber: food.fiber * factor,
+      sugar: food.sugar * factor,
+      sodium: food.sodium * factor,
+    };
+  } else if (food.serving.toLowerCase() === '100g') {
+    // If serving is explicitly 100g, use values as is
+    return {
+      calories: food.calories,
+      protein: food.protein,
+      carbs: food.carbs,
+      fats: food.fats,
+      fiber: food.fiber,
+      sugar: food.sugar,
+      sodium: food.sodium,
+    };
+  }
+  // Cannot reliably convert to 100g for other units (e.g., "1 cup", "1 medium")
+  return null;
+}
+
 export default function NutritionCalculator() {
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
 
-  // Removed meals state
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
   const [customFoods, setCustomFoods] = useLocalStorage<FoodItem[]>('nutrition-custom-foods', []);
   
   const [searchQuery, setSearchQuery] = useState('');
-  // Removed selectedMealType state
   const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', {
     calories: 2000,
     protein: 150,
@@ -40,6 +92,8 @@ export default function NutritionCalculator() {
     sugar: 25,
     sodium: 2300,
   });
+
+  const [recognizedFood, setRecognizedFood] = useState<FoodItem | null>(null); // New state for recognized food
 
   const allAvailableFoods = useMemo(() => {
     return [...foodDatabase, ...customFoods];
@@ -51,13 +105,23 @@ export default function NutritionCalculator() {
     );
   }, [searchQuery, allAvailableFoods]);
 
-  // Removed totals calculation
+  // Effect to update recognizedFood based on search query
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setRecognizedFood(null);
+      return;
+    }
+    // Find the first food that matches the search query
+    const foundFood = allAvailableFoods.find(food =>
+      food.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setRecognizedFood(foundFood || null);
+  }, [searchQuery, allAvailableFoods]);
 
-  // Removed addMeal function
-  // Removed addSavedMealToLog function
-  // Removed removeMeal function
-  // Removed updateServings function
-  // Removed getMealsByType function
+  const nutritionPer100g = useMemo(() => {
+    if (!recognizedFood) return null;
+    return calculateNutritionPer100g(recognizedFood);
+  }, [recognizedFood]);
 
   const handleSaveNewMeal = (newMeal: SavedMeal) => {
     setSavedMeals(prev => [...prev, newMeal]);
@@ -133,8 +197,43 @@ export default function NutritionCalculator() {
         </CreateCustomFoodDialog>
       </div>
 
-      {/* Removed all progress cards */}
-      {/* Removed Nutrition Charts */}
+      {/* Recognized Food Nutrition Card */}
+      {recognizedFood && nutritionPer100g && (
+        <Card className="mx-auto max-w-md mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Apple className="h-5 w-5" />
+              {t('nutritionCalculator.nutritionPer100g', { foodName: recognizedFood.name })}
+            </CardTitle>
+            <CardDescription>{t('nutritionCalculator.nutritionPer100gDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2 text-sm">
+              <Badge variant="secondary" className="font-normal">
+                {nutritionPer100g.calories.toFixed(0)} cal
+              </Badge>
+              <Badge variant="outline" className="font-normal">
+                P: {nutritionPer100g.protein.toFixed(1)}g
+              </Badge>
+              <Badge variant="outline" className="font-normal">
+                C: {nutritionPer100g.carbs.toFixed(1)}g
+              </Badge>
+              <Badge variant="outline" className="font-normal">
+                F: {nutritionPer100g.fats.toFixed(1)}g
+              </Badge>
+              <Badge variant="outline" className="font-normal">
+                V: {nutritionPer100g.fiber.toFixed(1)}g
+              </Badge>
+              <Badge variant="outline" className="font-normal">
+                S: {nutritionPer100g.sugar.toFixed(1)}g
+              </Badge>
+              <Badge variant="outline" className="font-normal">
+                Na: {nutritionPer100g.sodium.toFixed(0)}mg
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2 mb-6">
         {/* Food Database */}
@@ -148,7 +247,6 @@ export default function NutritionCalculator() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {/* Removed Tabs for meal types */}
               <ScrollArea className="h-[400px] pr-4">
                 <div className="space-y-2">
                   {filteredFoods.map((food) => (
@@ -181,7 +279,6 @@ export default function NutritionCalculator() {
                             </Badge>
                           </div>
                         </div>
-                        {/* Removed Add button for individual food items */}
                       </div>
                     </Card>
                   ))}
@@ -194,11 +291,9 @@ export default function NutritionCalculator() {
         {/* Saved Meals List */}
         <SavedMealsList
           savedMeals={savedMeals}
-          onDeleteMeal={handleDeleteSavedMeal} // Removed onAddMealToLog
+          onDeleteMeal={handleDeleteSavedMeal}
         />
       </div>
-
-      {/* Removed Daily Log Card */}
 
       {/* Button to create new saved meal */}
       <div className="mt-6 flex justify-end">

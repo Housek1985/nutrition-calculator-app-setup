@@ -36,7 +36,9 @@
     "createCustomFoodDescription": "Dodajte novo živilo, ki ga ni v bazi.",
     "foodName": "Ime živila",
     "servingSize": "Velikost porcije",
-    "saveFood": "Shrani živilo"
+    "saveFood": "Shrani živilo",
+    "nutritionPer100g": "Prehrana za {{foodName}} (na 100g)",
+    "nutritionPer100gDescription": "Ocenjene hranilne vrednosti na 100 gramov."
   },
   "toast": {
     "mealNameRequired": "Ime obroka je obvezno.",

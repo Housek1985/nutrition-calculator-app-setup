@@ -36,7 +36,9 @@
     "createCustomFoodDescription": "Add a new food item not found in the database.",
     "foodName": "Food Name",
     "servingSize": "Serving Size",
-    "saveFood": "Save Food"
+    "saveFood": "Save Food",
+    "nutritionPer100g": "Nutrition for {{foodName}} (per 100g)",
+    "nutritionPer100gDescription": "Estimated nutritional values per 100 grams."
   },
   "toast": {
     "mealNameRequired": "Meal name is required.",
