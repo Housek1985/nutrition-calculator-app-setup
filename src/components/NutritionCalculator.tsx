@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Sun, Moon, Utensils } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon } from 'lucide-react'; // Import SettingsIcon
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -16,12 +16,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from 'next-themes';
 import CreateSavedMealDialog from './CreateSavedMealDialog';
 import SavedMealsList from './SavedMealsList';
-import useLocalStorage from '@/hooks/use-local-storage'; // Import useLocalStorage
+import useLocalStorage from '@/hooks/use-local-storage';
+import SettingsDialog from './SettingsDialog'; // Import SettingsDialog
 
 export default function NutritionCalculator() {
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage();
-  const { theme, setTheme } = useTheme();
+  const { language, changeLanguage } = useLanguage(); // Keep for potential future use or if SettingsDialog doesn't fully replace
+  const { theme, setTheme } = useTheme(); // Keep for potential future use or if SettingsDialog doesn't fully replace
 
   // Use useLocalStorage for meals and savedMeals
   const [meals, setMeals] = useLocalStorage<MealEntry[]>('nutrition-meals', []);
@@ -29,7 +30,7 @@ export default function NutritionCalculator() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
-  const [dailyGoals, setDailyGoals] = useState<DailyGoals>({
+  const [dailyGoals, setDailyGoals] = useLocalStorage<DailyGoals>('nutrition-daily-goals', { // Use useLocalStorage for dailyGoals
     calories: 2000,
     protein: 150,
     carbs: 250,
@@ -114,21 +115,13 @@ export default function NutritionCalculator() {
         </h1>
         <p className="text-muted-foreground">{t('nutritionCalculator.description')}</p>
         <div className="mt-4 flex justify-center items-center gap-2">
-          <Button onClick={() => changeLanguage('en')} variant={language === 'en' ? 'default' : 'outline'} className="mr-2">EN</Button>
-          <Button onClick={() => changeLanguage('sl')} variant={language === 'sl' ? 'default' : 'outline'}>SL</Button>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          >
-            {theme === "dark" ? (
-              <Sun className="h-[1.2rem] w-[1.2rem]" />
-            ) : (
-              <Moon className="h-[1.2rem] w-[1.2rem]" />
-            )}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
+          {/* Settings Dialog Trigger */}
+          <SettingsDialog dailyGoals={dailyGoals} setDailyGoals={setDailyGoals}>
+            <Button variant="outline" size="icon">
+              <SettingsIcon className="h-[1.2rem] w-[1.2rem]" />
+              <span className="sr-only">{t('settings.title')}</span>
+            </Button>
+          </SettingsDialog>
         </div>
       </div>
 
@@ -392,8 +385,8 @@ export default function NutritionCalculator() {
         </CardContent>
       </Card>
 
-      {/* Daily Goals Settings */}
-      <Card className="mt-6">
+      {/* Daily Goals Settings - Removed from here, now in SettingsDialog */}
+      {/* <Card className="mt-6">
         <CardHeader>
           <CardTitle>{t('nutritionCalculator.dailyGoals')}</CardTitle>
           <CardDescription>{t('nutritionCalculator.dailyGoalsDescription')}</CardDescription>
@@ -438,7 +431,7 @@ export default function NutritionCalculator() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Button to create new saved meal */}
       <div className="mt-6 flex justify-end">

@@ -43,5 +43,14 @@
     "mealSaved": "Meal '{{mealName}}' saved!",
     "savedMealAdded": "Added '{{mealName}}' to {{mealType}}",
     "savedMealRemoved": "Saved meal removed"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your application settings.",
+    "language": "Language",
+    "theme": "Theme",
+    "lightTheme": "Light",
+    "darkTheme": "Dark",
+    "close": "Close"
   }
 }

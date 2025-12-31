@@ -43,5 +43,14 @@
     "mealSaved": "Obrok '{{mealName}}' shranjen!",
     "savedMealAdded": "Dodano '{{mealName}}' k {{mealType}}",
     "savedMealRemoved": "Shranjeni obrok odstranjen"
+  },
+  "settings": {
+    "title": "Nastavitve",
+    "description": "Upravljajte nastavitve aplikacije.",
+    "language": "Jezik",
+    "theme": "Tema",
+    "lightTheme": "Svetla",
+    "darkTheme": "Temna",
+    "close": "Zapri"
   }
 }
