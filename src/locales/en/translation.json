@@ -49,6 +49,8 @@
     "mealType": "Meal Type",
     "selectMealType": "Select meal type",
     "addSingleFood": "Add Single Food",
+    "addFoodToLogTitle": "Add {{foodName}} to Daily Log",
+    "addFoodToLogDescriptionDialog": "Specify servings and meal type for this food item.",
     "addFood": "Add Food",
     "addSavedMeal": "Add Saved Meal",
     "selectSavedMeal": "Select a saved meal",
@@ -69,7 +71,8 @@
     "selectFoodAndServings": "Please select a food and enter servings.",
     "selectSavedMeal": "Please select a saved meal.",
     "savedMealAddedToLog": "Saved meal '{{mealName}}' added to daily log!",
-    "foodNotFound": "Food '{{foodName}}' not found in database."
+    "foodNotFound": "Food '{{foodName}}' not found in database.",
+    "invalidServings": "Servings must be a positive number."
   },
   "settings": {
     "title": "Settings",

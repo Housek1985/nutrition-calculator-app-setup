@@ -19,6 +19,7 @@ import SavedMealsList from './SavedMealsList';
 import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
 import DailyLogTab from './DailyLogTab';
+import AddFoodToLogDialog from './AddFoodToLogDialog'; // Import the new component
 
 interface DisplayNutrition {
   calories: number;
@@ -335,7 +336,7 @@ export default function NutritionCalculator() {
               <div className="space-y-4">
                 <ScrollArea className="h-[400px] pr-4">
                   <div className="space-y-2">
-                    {filteredFoods.map((food) => (
+                    {allAvailableFoods.map((food) => (
                       <Card key={food.id} className="p-3 hover:bg-accent/5 transition-colors">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
@@ -365,6 +366,11 @@ export default function NutritionCalculator() {
                               </Badge>
                             </div>
                           </div>
+                          <AddFoodToLogDialog foodItem={food} onAddFood={handleAddFoodToDailyLog}>
+                            <Button size="sm" className="shrink-0">
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </AddFoodToLogDialog>
                         </div>
                       </Card>
                     ))}

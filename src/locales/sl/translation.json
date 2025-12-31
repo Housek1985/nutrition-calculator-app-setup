@@ -49,6 +49,8 @@
     "mealType": "Vrsta obroka",
     "selectMealType": "Izberite vrsto obroka",
     "addSingleFood": "Dodaj posamezno živilo",
+    "addFoodToLogTitle": "Dodaj {{foodName}} v dnevni vnos",
+    "addFoodToLogDescriptionDialog": "Določite porcije in vrsto obroka za to živilo.",
     "addFood": "Dodaj živilo",
     "addSavedMeal": "Dodaj shranjen obrok",
     "selectSavedMeal": "Izberite shranjen obrok",
@@ -69,7 +71,8 @@
     "selectFoodAndServings": "Prosimo, izberite živilo in vnesite porcije.",
     "selectSavedMeal": "Prosimo, izberite shranjen obrok.",
     "savedMealAddedToLog": "Shranjeni obrok '{{mealName}}' dodan v dnevni vnos!",
-    "foodNotFound": "Živilo '{{foodName}}' ni najdeno v bazi."
+    "foodNotFound": "Živilo '{{foodName}}' ni najdeno v bazi.",
+    "invalidServings": "Porcije morajo biti pozitivno število."
   },
   "settings": {
     "title": "Nastavitve",
