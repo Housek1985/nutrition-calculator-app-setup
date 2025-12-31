@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles } from 'lucide-react'; // Removed UtensilsCrossed, added Sparkles
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
 import { DailyGoals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -80,7 +80,6 @@ export default function NutritionCalculator() {
   const { theme, setTheme } = useTheme();
 
   const [savedMeals, setSavedMeals] = useLocalStorage<SavedMeal[]>('nutrition-saved-meals', []);
-  // Removed customFoods state
   
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmedSearchQuery, setConfirmedSearchQuery] = useState(''); // New state for confirmed search
@@ -97,7 +96,7 @@ export default function NutritionCalculator() {
   const [recognizedFood, setRecognizedFood] = useState<FoodItem | null>(null);
 
   const allAvailableFoods = useMemo(() => {
-    return [...foodDatabase]; // Removed customFoods
+    return [...foodDatabase];
   }, [foodDatabase]);
 
   const filteredFoods = useMemo(() => {
@@ -143,7 +142,8 @@ export default function NutritionCalculator() {
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
           {t('nutritionCalculator.title')}
         </h1>
-        <p className="text-muted-foreground">{t('nutritionCalculator.description')}</p>
+        <p className="text-muted-foreground mb-2">{t('nutritionCalculator.description')}</p>
+        <p className="text-sm text-primary/80 font-medium">{t('nutritionCalculator.welcomeMessage')}</p>
         <div className="mt-4 flex justify-center items-center gap-2">
           {/* Settings Dialog Trigger */}
           <SettingsDialog dailyGoals={dailyGoals} setDailyGoals={setDailyGoals}>

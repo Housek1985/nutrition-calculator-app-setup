@@ -2,6 +2,7 @@
   "nutritionCalculator": {
     "title": "Nutrition Calculator",
     "description": "Track your daily nutrition and reach your goals",
+    "welcomeMessage": "Start your journey to a healthier you today!",
     "calories": "Calories",
     "protein": "Protein",
     "carbs": "Carbs",

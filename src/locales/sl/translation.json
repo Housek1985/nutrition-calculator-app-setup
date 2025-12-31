@@ -2,6 +2,7 @@
   "nutritionCalculator": {
     "title": "Kalkulator Prehrane",
     "description": "Spremljajte dnevni vnos hranil in dosežite svoje cilje",
+    "welcomeMessage": "Začnite svojo pot do bolj zdravega življenja že danes!",
     "calories": "Kalorije",
     "protein": "Beljakovine",
     "carbs": "Ogljikovi hidrati",
