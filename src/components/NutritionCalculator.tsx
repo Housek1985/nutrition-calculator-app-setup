@@ -203,7 +203,8 @@ export default function NutritionCalculator() {
   return (
     <div className="container mx-auto p-4 max-w-7xl">
       <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent flex items-center justify-center gap-2">
+          <Salad className="h-9 w-9 text-primary" /> {/* Added Salad icon here */}
           {t('nutritionCalculator.title')}
         </h1>
         <p className="text-muted-foreground mb-2">{t('nutritionCalculator.description')}</p>
