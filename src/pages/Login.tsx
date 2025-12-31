@@ -9,28 +9,26 @@ import { useEffect } from 'react';
 import { Salad, Globe } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useSession } from '@/contexts/SessionContext'; // Uvozi useSession
+import { useSession } from '@/contexts/SessionContext';
 
 export default function Login() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { isGuest: sessionIsGuest, setIsGuest: setSessionIsGuest } = useSession(); // Pridobi isGuest in setIsGuest iz SessionContext
+  const { isGuest: sessionIsGuest, setIsGuest: setSessionIsGuest } = useSession();
   const { language, changeLanguage } = useLanguage();
 
   useEffect(() => {
-    // Če je že gost ali avtenticiran, preusmeri na domačo stran
-    if (sessionIsGuest) { // Uporabi isGuest iz SessionContext
+    if (sessionIsGuest) {
       navigate('/');
     }
-    // Zagotovi, da je jezik i18n nastavljen na 'sl' ob začetnem nalaganju, če še ni
     if (i18n.language !== 'sl' && i18n.language !== 'en') {
       changeLanguage('sl');
     }
   }, [sessionIsGuest, navigate, i18n, changeLanguage]);
 
   const handleGuestLogin = () => {
-    setSessionIsGuest(true); // Posodobi stanje isGuest v SessionContext
-    localStorage.setItem('is-guest', JSON.stringify(true)); // Eksplicitno nastavi local storage
+    setSessionIsGuest(true);
+    localStorage.setItem('is-guest', JSON.stringify(true));
     navigate('/');
   };
 
@@ -44,7 +42,7 @@ export default function Login() {
         <div className="bg-card p-6 rounded-lg shadow-lg border border-border">
           <Auth
             supabaseClient={supabase}
-            providers={[]}
+            providers={['google']}
             appearance={{
               theme: ThemeSupa,
               variables: {
