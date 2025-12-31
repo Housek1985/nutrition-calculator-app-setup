@@ -38,6 +38,8 @@
     "saveFood": "Save Food",
     "nutritionPer100g": "Nutrition for {{foodName}} (per 100g)",
     "nutritionPer100gDescription": "Estimated nutritional values per 100 grams.",
+    "nutritionPerServing": "Nutrition for {{foodName}} (per {{serving}})",
+    "nutritionPerServingDescription": "Nutritional values for the specified serving size.",
     "confirmSearch": "Confirm Search",
     "dailyLog": "Daily Log",
     "todaysIntake": "Today's Intake",

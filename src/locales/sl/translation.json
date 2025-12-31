@@ -38,6 +38,8 @@
     "saveFood": "Shrani živilo",
     "nutritionPer100g": "Prehrana za {{foodName}} (na 100g)",
     "nutritionPer100gDescription": "Ocenjene hranilne vrednosti na 100 gramov.",
+    "nutritionPerServing": "Prehrana za {{foodName}} (na {{serving}})",
+    "nutritionPerServingDescription": "Hranilne vrednosti za določeno velikost porcije.",
     "confirmSearch": "Potrdi iskanje",
     "dailyLog": "Dnevni vnos",
     "todaysIntake": "Današnji vnos",
