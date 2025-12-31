@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon, Salad, Candy, Droplet } from 'lucide-react'; // Changed Salt to Droplet
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, ChartBar, Sun, Moon, Salad, Candy, Droplet, Globe } from 'lucide-react'; // Import Globe icon
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem, SavedMeal } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -142,10 +142,20 @@ export default function NutritionCalculator() {
             )}
             <span className="sr-only">Toggle theme</span>
           </Button>
+
+          {/* Language Toggle Button */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => changeLanguage(language === 'en' ? 'sl' : 'en')}
+          >
+            <Globe className="h-[1.2rem] w-[1.2rem]" />
+            <span className="sr-only">Toggle language</span>
+          </Button>
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-6"> {/* Adjusted grid columns */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-6">
         {/* Calories Card */}
         <Card className="border-primary/20">
           <CardHeader className="pb-3">
@@ -231,7 +241,7 @@ export default function NutritionCalculator() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Droplet className="h-5 w-5 text-blue-500" /> {/* Changed Salt to Droplet */}
+                <Droplet className="h-5 w-5 text-blue-500" />
                 {t('nutritionCalculator.sodium')}
               </CardTitle>
               <Badge variant="outline">{totals.sodium.toFixed(0)}mg / {dailyGoals.sodium}mg</Badge>
@@ -428,7 +438,7 @@ export default function NutritionCalculator() {
                       <Card key={meal.id} className="p-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm mb-1">{meal.foodItem.name}</h4>
+                            <h4 className="font-semibold text-sm">{meal.foodItem.name}</h4>
                             <div className="flex items-center gap-2 mb-2">
                               <Input
                                 type="number"

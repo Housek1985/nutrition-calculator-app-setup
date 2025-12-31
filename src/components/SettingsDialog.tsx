@@ -25,8 +25,8 @@ interface SettingsDialogProps {
 
 export default function SettingsDialog({ dailyGoals, setDailyGoals, children }: SettingsDialogProps) {
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage();
-  const { theme, setTheme } = useTheme();
+  const { language, changeLanguage } = useLanguage(); // Keep for potential future use if needed elsewhere
+  const { theme, setTheme } = useTheme(); // Keep for potential future use if needed elsewhere
 
   return (
     <Dialog>
@@ -40,27 +40,7 @@ export default function SettingsDialog({ dailyGoals, setDailyGoals, children }: 
           <DialogDescription>{t('settings.description')}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {/* Language Settings */}
-          <div className="space-y-2">
-            <Label>{t('settings.language')}</Label>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => changeLanguage('en')}
-                variant={language === 'en' ? 'default' : 'outline'}
-              >
-                English
-              </Button>
-              <Button
-                onClick={() => changeLanguage('sl')}
-                variant={language === 'sl' ? 'default' : 'outline'}
-              >
-                Slovenščina
-              </Button>
-            </div>
-          </div>
-
-          <Separator />
-
+          {/* Language Settings - REMOVED FROM HERE, NOW ON MAIN PAGE */}
           {/* Theme Settings */}
           <div className="space-y-2">
             <Label>{t('settings.theme')}</Label>
