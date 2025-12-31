@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles, Camera } from 'lucide-react';
+import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Utensils, Settings as SettingsIcon, Sun, Moon, Salad, Candy, Droplet, Globe, Sparkles, Camera, LineChart as LineChartIcon } from 'lucide-react';
 import { foodDatabase } from '@/data/foodDatabase';
 import { DailyGoals, FoodItem, SavedMeal, MealEntry } from '@/types/nutrition';
 import { toast } from 'sonner';
@@ -20,7 +20,8 @@ import useLocalStorage from '@/hooks/use-local-storage';
 import SettingsDialog from './SettingsDialog';
 import DailyLogTab from './DailyLogTab';
 import AddFoodToLogDialog from './AddFoodToLogDialog';
-import ImageFoodRecognizer from './ImageFoodRecognizer'; // Import the new component
+import ImageFoodRecognizer from './ImageFoodRecognizer';
+import NutritionTrendsChart from './NutritionTrendsChart'; // Import the new chart component
 
 interface DisplayNutrition {
   calories: number;
@@ -204,7 +205,7 @@ export default function NutritionCalculator() {
     <div className="container mx-auto p-4 max-w-7xl">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent flex items-center justify-center gap-2">
-          <Salad className="h-9 w-9 text-primary" /> {/* Added Salad icon here */}
+          <Salad className="h-9 w-9 text-primary" />
           {t('nutritionCalculator.title')}
         </h1>
         <p className="text-muted-foreground mb-2">{t('nutritionCalculator.description')}</p>
@@ -278,10 +279,14 @@ export default function NutritionCalculator() {
       </div>
 
       <Tabs defaultValue="daily-log" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4"> {/* Changed to grid-cols-4 */}
           <TabsTrigger value="daily-log">{t('nutritionCalculator.dailyLog')}</TabsTrigger>
           <TabsTrigger value="food-database">{t('nutritionCalculator.foodDatabase')}</TabsTrigger>
           <TabsTrigger value="saved-meals">{t('nutritionCalculator.savedMeals')}</TabsTrigger>
+          <TabsTrigger value="nutrition-trends"> {/* New tab trigger */}
+            <LineChartIcon className="h-4 w-4 mr-2" />
+            {t('nutritionCalculator.nutritionTrends')}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="daily-log" className="mt-6">
           <DailyLogTab 
@@ -364,6 +369,9 @@ export default function NutritionCalculator() {
               </Button>
             </CreateSavedMealDialog>
           </div>
+        </TabsContent>
+        <TabsContent value="nutrition-trends" className="mt-6"> {/* New tab content */}
+          <NutritionTrendsChart dailyEntries={dailyEntries} dailyGoals={dailyGoals} />
         </TabsContent>
       </Tabs>
     </div>

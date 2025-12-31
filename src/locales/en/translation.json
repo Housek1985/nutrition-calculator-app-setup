@@ -53,7 +53,10 @@
     "recognizeFoodImageDescription": "Upload an image to identify food items.",
     "uploadImage": "Upload Image",
     "recognizedFoods": "Recognized Foods",
-    "noFoodsRecognized": "No foods recognized. Try another image!"
+    "noFoodsRecognized": "No foods recognized. Try another image!",
+    "nutritionTrends": "Nutrition Trends",
+    "nutritionTrendsDescription": "Visualize your daily nutrition intake over time.",
+    "noDataForCharts": "No daily log data available to display charts yet."
   },
   "toast": {
     "mealNameRequired": "Meal name is required.",

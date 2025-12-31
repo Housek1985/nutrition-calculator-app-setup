@@ -53,7 +53,10 @@
     "recognizeFoodImageDescription": "Naložite sliko za prepoznavanje živil.",
     "uploadImage": "Naloži sliko",
     "recognizedFoods": "Prepoznana živila",
-    "noFoodsRecognized": "Živila niso prepoznana. Poskusite z drugo sliko!"
+    "noFoodsRecognized": "Živila niso prepoznana. Poskusite z drugo sliko!",
+    "nutritionTrends": "Prehranski trendi",
+    "nutritionTrendsDescription": "Vizualizirajte svoj dnevni vnos hranil skozi čas.",
+    "noDataForCharts": "Za prikaz grafikonov še ni podatkov o dnevnem vnosu."
   },
   "toast": {
     "mealNameRequired": "Ime obroka je obvezno.",
