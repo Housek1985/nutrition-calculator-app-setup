@@ -12,8 +12,11 @@ import { Plus, Trash2, Search, Apple, Flame, Beef, Wheat, Droplet } from 'lucide
 import { foodDatabase } from '@/data/foodDatabase';
 import { MealEntry, DailyGoals, NutritionTotals, FoodItem } from '@/types/nutrition';
 import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { ThemeLanguageToggle } from '@/components/ThemeLanguageToggle';
 
 export default function NutritionCalculator() {
+  const { t } = useLanguage();
   const [meals, setMeals] = useState<MealEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
@@ -75,11 +78,16 @@ export default function NutritionCalculator() {
 
   return (
     <div className="container mx-auto p-4 max-w-7xl">
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Nutrition Calculator
-        </h1>
-        <p className="text-muted-foreground">Track your daily nutrition and reach your goals</p>
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {t('app.title')}
+            </h1>
+            <p className="text-muted-foreground">{t('app.subtitle')}</p>
+          </div>
+          <ThemeLanguageToggle />
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
@@ -89,7 +97,7 @@ export default function NutritionCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Flame className="h-5 w-5 text-primary" />
-                Calories
+                {t('nutrition.calories')}
               </CardTitle>
               <Badge variant="outline">{totals.calories.toFixed(0)} / {dailyGoals.calories}</Badge>
             </div>
@@ -105,7 +113,7 @@ export default function NutritionCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Beef className="h-5 w-5 text-accent" />
-                Protein
+                {t('nutrition.protein')}
               </CardTitle>
               <Badge variant="outline">{totals.protein.toFixed(1)}g / {dailyGoals.protein}g</Badge>
             </div>
@@ -121,7 +129,7 @@ export default function NutritionCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Wheat className="h-5 w-5 text-warning" />
-                Carbs
+                {t('nutrition.carbs')}
               </CardTitle>
               <Badge variant="outline">{totals.carbs.toFixed(1)}g / {dailyGoals.carbs}g</Badge>
             </div>
@@ -138,9 +146,9 @@ export default function NutritionCalculator() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Apple className="h-5 w-5" />
-              Food Database
+              {t('food.database')}
             </CardTitle>
-            <CardDescription>Search and add foods to your meals</CardDescription>
+            <CardDescription>{t('food.select')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -148,7 +156,7 @@ export default function NutritionCalculator() {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search foods..."
+                    placeholder={t('food.search')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-9"
@@ -158,10 +166,10 @@ export default function NutritionCalculator() {
 
               <Tabs value={selectedMealType} onValueChange={(v) => setSelectedMealType(v as any)}>
                 <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
-                  <TabsTrigger value="lunch">Lunch</TabsTrigger>
-                  <TabsTrigger value="dinner">Dinner</TabsTrigger>
-                  <TabsTrigger value="snack">Snack</TabsTrigger>
+                  <TabsTrigger value="breakfast">{t('meal.breakfast')}</TabsTrigger>
+                  <TabsTrigger value="lunch">{t('meal.lunch')}</TabsTrigger>
+                  <TabsTrigger value="dinner">{t('meal.dinner')}</TabsTrigger>
+                  <TabsTrigger value="snack">{t('meal.snack')}</TabsTrigger>
                 </TabsList>
               </Tabs>
 
@@ -207,24 +215,24 @@ export default function NutritionCalculator() {
         {/* Daily Log */}
         <Card>
           <CardHeader>
-            <CardTitle>Today's Meals</CardTitle>
-            <CardDescription>Your nutrition log for today</CardDescription>
+            <CardTitle>{t('meals.today')}</CardTitle>
+            <CardDescription>{t('app.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" className="w-full">
               <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
-                <TabsTrigger value="lunch">Lunch</TabsTrigger>
-                <TabsTrigger value="dinner">Dinner</TabsTrigger>
-                <TabsTrigger value="snack">Snack</TabsTrigger>
+                <TabsTrigger value="all">{t('meals.total')}</TabsTrigger>
+                <TabsTrigger value="breakfast">{t('meal.breakfast')}</TabsTrigger>
+                <TabsTrigger value="lunch">{t('meal.lunch')}</TabsTrigger>
+                <TabsTrigger value="dinner">{t('meal.dinner')}</TabsTrigger>
+                <TabsTrigger value="snack">{t('meal.snack')}</TabsTrigger>
               </TabsList>
 
               <ScrollArea className="h-[400px] mt-4">
                 <TabsContent value="all" className="space-y-2 mt-0">
                   {meals.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
-                      No meals added yet. Start by adding foods from the database.
+                      {t('meals.empty')}
                     </div>
                   ) : (
                     meals.map((meal) => (
